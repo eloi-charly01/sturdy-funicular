@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Project;
 use App\Form\ProjectForm;
 use App\Repository\ProjectRepository;
+use App\UseCase\ProjectUseCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,11 +15,15 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/project', name: 'app_project.')]
 final class ProjectController extends AbstractController
 {
+
+    public function __construct(
+        private readonly ProjectUseCase $projectUseCase
+    ) {}
     #[Route(name: 'index', methods: ['GET'])]
-    public function index(ProjectRepository $projectRepository): Response
+    public function index(Request $request): Response
     {
         return $this->render('project/index.html.twig', [
-            'projects' => $projectRepository->findAll(),
+            'projects' => $this->projectUseCase->getProjects($request),
         ]);
     }
 

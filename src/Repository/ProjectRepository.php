@@ -3,18 +3,27 @@
 namespace App\Repository;
 
 use App\Entity\Project;
+use App\Interface\ProjectInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Project>
  */
-class ProjectRepository extends ServiceEntityRepository
+class ProjectRepository extends ServiceEntityRepository implements ProjectInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Project::class);
     }
+
+    public function getProjects(): QueryBuilder
+    {
+        return $this->createQueryBuilder('p');
+    }
+
+
 
     //    /**
     //     * @return Project[] Returns an array of Project objects

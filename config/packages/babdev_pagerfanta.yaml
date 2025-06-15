@@ -1,0 +1,6 @@
+babdev_pagerfanta:
+    # The default Pagerfanta view to use in your application
+    default_view: twig
+
+    # The default Twig template to use when using the Twig Pagerfanta view
+    default_twig_template: "@BabDevPagerfanta/tailwind.html.twig"

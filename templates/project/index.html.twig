@@ -74,25 +74,7 @@
 					</tbody>
 				</table>
 			</div>
-
-			{% if projects|length > 0 %}
-				<div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-					<div class="text-sm text-gray-500">
-						Affichage de
-						<span class="font-medium">{{ projects|length }}</span>
-						projets
-					</div>
-					{# Pagination #}
-					<div class="flex space-x-2">
-						<button class="px-3 py-1 rounded border border-gray-300 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-							Précédent
-						</button>
-						<button class="px-3 py-1 rounded border border-gray-300 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-							Suivant
-						</button>
-					</div>
-				</div>
-			{% endif %}
+			{{ include ("partials/_pagination.html.twig", { pager : projects })}}
 		</div>
 	</div>
 
