@@ -2,6 +2,7 @@
 
 namespace App\UseCase;
 
+use App\Entity\Project;
 use App\Interface\ProjectInterface;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
@@ -22,5 +23,15 @@ final class ProjectUseCase
             $page,
             10
         );
+    }
+
+    public function createOrUpdate(Project $project)
+    {
+        $this->projectInterface->createOrUpdate($project);
+    }
+
+    public function remove(Project $project)
+    {
+        $this->projectInterface->remove($project);
     }
 }

@@ -23,6 +23,20 @@ class ProjectRepository extends ServiceEntityRepository implements ProjectInterf
         return $this->createQueryBuilder('p');
     }
 
+    public function createOrUpdate(Project $project): void
+    {
+        if (!$project->getId()) {
+            $this->getEntityManager()->persist($project);
+        }
+        $this->getEntityManager()->flush();
+    }
+
+    public function remove(Project $project): void
+    {
+        $this->getEntityManager()->remove($project);
+        $this->getEntityManager()->flush();
+    }
+
 
 
     //    /**

@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Project;
 use App\Form\ProjectForm;
-use App\Repository\ProjectRepository;
 use App\UseCase\ProjectUseCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,7 +14,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/project', name: 'app_project.')]
 final class ProjectController extends AbstractController
 {
-
     public function __construct(
         private readonly ProjectUseCase $projectUseCase
     ) {}
@@ -27,21 +25,23 @@ final class ProjectController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     #[Route('/create-new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, ?Project $project): Response
     {
-        $project = new Project();
+        if (!$project) {
+            $project = new Project();
+        }
         $form = $this->createForm(ProjectForm::class, $project);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($project);
-            $entityManager->flush();
-
+            $this->projectUseCase->createOrUpdate($project);
             return $this->redirectToRoute('app_project.index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('project/new.html.twig', [
+        $template = $project->getId() ? 'project/edit.html.twig' :  'project/new.html.twig';
+        return $this->render($template, [
             'project' => $project,
             'form' => $form,
         ]);
@@ -55,30 +55,11 @@ final class ProjectController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Project $project, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(ProjectForm::class, $project);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_project.index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('project/edit.html.twig', [
-            'project' => $project,
-            'form' => $form,
-        ]);
-    }
-
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
-    public function delete(Request $request, Project $project, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Project $project): Response
     {
         if ($this->isCsrfTokenValid('delete' . $project->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($project);
-            $entityManager->flush();
+            $this->projectUseCase->remove($project);
         }
 
         return $this->redirectToRoute('app_project.index', [], Response::HTTP_SEE_OTHER);

@@ -25,11 +25,11 @@
 				<div>
 					<h3 class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Menu Principal</h3>
 					<div class="mt-2 space-y-1">
-						<a href="#" class="flex items-center px-3 py-2 text-md font-medium text-blue-500 rounded-md">
-							<i class="fas fa-tachometer-alt mr-3 text-gray-500"></i>
+						<a href="{{ path('app_home') }}" class="flex items-center px-3 py-2 text-md font-medium {{ app.current_route == 'app_home' ? 'text-blue-500'	: 'text-gray-500' }} hover:text-gray-700 hover:bg-gray-400 rounded-md">
+							<i class="fas fa-home mr-3"></i>
 							Tableau de bord
 						</a>
-						<a href="{{ path('app_project.index') }}" class="flex items-center px-3 py-2 text-md font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-400 rounded-md">
+						<a href="{{ path('app_project.index') }}" class="flex items-center px-3 py-2 text-md font-medium {{ app.current_route starts with 'app_project.' ? 'text-blue-500'	: 'text-gray-500' }}  hover:text-gray-700 hover:bg-gray-400 rounded-md">
 							<i class="fas fa-users mr-3"></i>
 							Projets
 						</a>
