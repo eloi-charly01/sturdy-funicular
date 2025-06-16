@@ -3,8 +3,7 @@
 namespace App\UseCase;
 
 use App\Interface\UserInterface;
-use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use Pagerfanta\Pagerfanta;
+use App\Shared\PaginationShared;
 use Symfony\Component\HttpFoundation\Request;
 
 final class UserUseCase
@@ -15,11 +14,7 @@ final class UserUseCase
     {
         $page = $request->query->getInt('page', 1);
 
-        return Pagerfanta::createForCurrentPageWithMaxPerPage(
-            new QueryAdapter($this->userInterface->getUsers()),
-            $page,
-            6
-        );
+        return PaginationShared::paginate($this->userInterface->getUsers(), $page, 6);
     }
 
     public function countUsers(): int

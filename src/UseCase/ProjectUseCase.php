@@ -4,8 +4,7 @@ namespace App\UseCase;
 
 use App\Entity\Project;
 use App\Interface\ProjectInterface;
-use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use Pagerfanta\Pagerfanta;
+use App\Shared\PaginationShared;
 use Symfony\Component\HttpFoundation\Request;
 
 final class ProjectUseCase
@@ -18,11 +17,7 @@ final class ProjectUseCase
     {
         $page = $request->query->getInt('page', 1);
 
-        return Pagerfanta::createForCurrentPageWithMaxPerPage(
-            new QueryAdapter($this->projectInterface->getProjects()),
-            $page,
-            10
-        );
+        return PaginationShared::paginate($this->projectInterface->getProjects(), $page);
     }
 
     public function createOrUpdate(Project $project)
