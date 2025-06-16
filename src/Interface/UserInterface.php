@@ -7,4 +7,5 @@ use Doctrine\ORM\QueryBuilder;
 interface UserInterface
 {
     public function getUsers(): QueryBuilder;
+    public function countUsers(): int;
 }

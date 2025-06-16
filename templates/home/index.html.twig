@@ -10,59 +10,10 @@
 		<div class="flex justify-between">
 			<h4 class="text-2xl font-semibold text-gray-500">Projets</h4>
 		</div>
-		<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 mt-6 space-x-6">
+		<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 mt-6 gap-4">
 
-			<div class="flex flex-col p-4 bg-white rounded-md space-y-6">
-				<div class="">
-					<h5 class="text-lg font-semibold text-gray-500">PROJECT DASHBORD</h5>
-					<p class="text-sm text-gray-400">New task assign</p>
-				</div>
-				<div class="">
-					<span class="text-sm text-gray-500">
-						4 hrs ago
-					</span>
-				</div>
-
-			</div>
-
-			<div class="flex flex-col p-4 bg-white rounded-md space-y-6">
-				<div class="">
-					<h5 class="text-lg font-semibold text-gray-500">PROJECT DASHBORD</h5>
-					<p class="text-sm text-gray-400">New task assign</p>
-				</div>
-				<div class="">
-					<span class="text-sm text-gray-500">
-						4 hrs ago
-					</span>
-				</div>
-
-			</div>
-
-			<div class="flex flex-col p-4 bg-white rounded-md space-y-6">
-				<div class="">
-					<h5 class="text-lg font-semibold text-gray-500">PROJECT DASHBORD</h5>
-					<p class="text-sm text-gray-400">New task assign</p>
-				</div>
-				<div class="">
-					<span class="text-sm text-gray-500">
-						4 hrs ago
-					</span>
-				</div>
-
-			</div>
-
-			<div class="flex flex-col p-4 bg-white rounded-md space-y-6">
-				<div class="">
-					<h5 class="text-lg font-semibold text-gray-500">PROJECT DASHBORD</h5>
-					<p class="text-sm text-gray-400">New task assign</p>
-				</div>
-				<div class="">
-					<span class="text-sm text-gray-500">
-						4 hrs ago
-					</span>
-				</div>
-
-			</div>
+			{{ include('partials/_widget.html.twig', { title : "Projets", description: "Nombre total de projets"  , total : count_projects}) }}
+			{{ include('partials/_widget.html.twig', { title : "Membres", description: "Nombre total des membres" , total : count_users }) }}
 		</div>
 	</div>
 

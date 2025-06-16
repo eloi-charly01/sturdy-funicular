@@ -21,4 +21,9 @@ final class UserUseCase
             6
         );
     }
+
+    public function countUsers(): int
+    {
+        return $this->userInterface->countUsers();
+    }
 }

@@ -34,4 +34,9 @@ final class ProjectUseCase
     {
         $this->projectInterface->remove($project);
     }
+
+    public function countProjects(): int
+    {
+        return $this->projectInterface->countProjects();
+    }
 }
