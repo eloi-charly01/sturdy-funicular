@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ parent() }}
+	Gestion des Membres
+{% endblock %}
+
+{% block body %}
+	<div class="overflow-hidden">
+		<div class=" mb-6 flex justify-between items-center">
+			<h4 class="text-2xl font-semibold text-gray-700">Gestion des membres</h4>
+		</div>
+
+		<div class="px-6 py-4 overflow-hidden">
+			<div class="flex justify-end">
+				<a href="{{ path('app_user.register') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-sm font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+					<i class="fas fa-plus mr-2"></i>
+					Nouveau membre
+				</a>
+			</div>
+			<div class="overflow-x-auto mt-4 w-full max-w-full">
+				<div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+					{% for user in users %}
+						<div class="py-10 px-6 rounded-md  bg-white">
+							<div class="border-b border-gray-400 pb-10 text-center">
+								<h4 class="text-gray-700 text-lg font-semibold">{{ user.firstname }}
+									<br>
+									{{ user.lastname }}</h4>
+								<div class="mb-2 text-center">
+									<span class="text-gray-400 text-sm mt-4">
+										<i class="fas fa-envelope"></i>
+										{{ user.email }}
+									</span>
+								</div>
+							</div>
+							<div class="mt-6">
+								<h5 class="text-gray-500 text-md font-normal text-center">Complate Total 18 Project</h5>
+								<div class="flex justify-between gap-4 mt-6">
+									<div class="bg-gray-200 px-6 py-2 rounded-sm">
+										<i class="fas fa-message text-gray-400"></i>
+									</div>
+									<div class="bg-gray-200 px-6 py-2 rounded-sm">
+										<i class="fas fa-phone text-gray-400"></i>
+									</div>
+									<div class="bg-gray-200 px-6 py-2 rounded-sm">
+										<i class="fas fa-envelope text-gray-400"></i>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+			{{ include ("partials/_pagination.html.twig", { pager : users })}}
+		</div>
+	</div>
+
+{% endblock %}
