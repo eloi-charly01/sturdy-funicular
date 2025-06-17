@@ -1,5 +1,5 @@
 <div>
-	{{ form_start(registrationForm) }}
+	{{ form_start(registrationForm, { 'attr': { 'enctype': 'multipart/form-data' } }) }}
 	{% if registrationForm.vars.errors|length > 0 %}
 		<div class="rounded-md bg-red-50 p-4 mb-4">
 			<div class="flex">
@@ -12,6 +12,17 @@
 			</div>
 		</div>
 	{% endif %}
+	{# Form imageFile #}
+
+	<div class="mb-4">
+		{{ form_label(registrationForm.imageFile, 'Inserer l\'image', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+		<div class="mt-1 relative rounded-md shadow-sm">
+			{{ form_widget(registrationForm.imageFile, {'attr': {
+                            'class': 'form-input block w-full pl-4 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                        }}) }}
+		</div>
+	</div>
+
 
 	<div class="mb-4">
 		{{ form_label(registrationForm.firstname, 'Nom du membres', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
@@ -22,7 +33,6 @@
                         }}) }}
 		</div>
 	</div>
-
 	<div class="mb-4">
 		{{ form_label(registrationForm.lastname, 'Prénom du membres', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
 		<div class="mt-1 relative rounded-md shadow-sm">
@@ -73,4 +83,4 @@
 	</div>
 	{{ form_end(registrationForm) }}
 
-</div>
+	</div>
