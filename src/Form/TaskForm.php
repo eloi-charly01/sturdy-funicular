@@ -22,10 +22,12 @@ class TaskForm extends AbstractType
             ->add('project', EntityType::class, [
                 'class' => Project::class,
                 'choice_label' => 'name',
+                'autocomplete' => true,
             ])
             ->add('assigned', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'firstname',
+                'autocomplete' => true,
             ])
         ;
     }
