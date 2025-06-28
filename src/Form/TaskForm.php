@@ -5,8 +5,11 @@ namespace App\Form;
 use App\Entity\Project;
 use App\Entity\Task;
 use App\Entity\User;
+use App\Enum\StatusEnum;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,7 +21,13 @@ class TaskForm extends AbstractType
         $builder
             ->add('title')
             ->add('description', TextareaType::class, [])
-            ->add('status')
+            ->add('status', EnumType::class, [
+                'class' => StatusEnum::class,
+                'choice_label' => function ($choice) {
+                    return $choice->label();
+                },
+            ])
+            ->add('finishedAt', DateType::class, [])
             ->add('project', EntityType::class, [
                 'class' => Project::class,
                 'choice_label' => 'name',

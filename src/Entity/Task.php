@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\StatusEnum;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -21,7 +22,7 @@ class Task
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    private ?StatusEnum $status = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -37,6 +38,9 @@ class Task
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
     private ?User $assigned = null;
+
+    #[ORM\ManyToOne(inversedBy: 'responsabilityTasks')]
+    private ?User $responsability = null;
 
     public function getId(): ?int
     {
@@ -67,12 +71,12 @@ class Task
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?StatusEnum
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(StatusEnum $status): static
     {
         $this->status = $status;
 
@@ -143,5 +147,17 @@ class Task
     public function setCreatedAtValue(): void
     {
         $this->createdAt = new \DateTimeImmutable();
+    }
+
+    public function getResponsability(): ?User
+    {
+        return $this->responsability;
+    }
+
+    public function setResponsability(?User $responsability): static
+    {
+        $this->responsability = $responsability;
+
+        return $this;
     }
 }

@@ -69,9 +69,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'assigned')]
     private Collection $tasks;
 
+    /**
+     * @var Collection<int, Task>
+     */
+    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'responsability')]
+    private Collection $responsabilityTasks;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
+        $this->responsabilityTasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -295,5 +302,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getImageFile(): ?File
     {
         return $this->imageFile;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getResponsabilityTasks(): Collection
+    {
+        return $this->responsabilityTasks;
+    }
+
+    public function addResponsabilityTask(Task $responsabilityTask): static
+    {
+        if (!$this->responsabilityTasks->contains($responsabilityTask)) {
+            $this->responsabilityTasks->add($responsabilityTask);
+            $responsabilityTask->setResponsability($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResponsabilityTask(Task $responsabilityTask): static
+    {
+        if ($this->responsabilityTasks->removeElement($responsabilityTask)) {
+            // set the owning side to null (unless already changed)
+            if ($responsabilityTask->getResponsability() === $this) {
+                $responsabilityTask->setResponsability(null);
+            }
+        }
+
+        return $this;
     }
 }

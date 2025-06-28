@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\UseCase\ProjectUseCase;
+use App\UseCase\TaskUseCase;
 use App\UseCase\UserUseCase;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +16,8 @@ final class HomeController extends AbstractController
 
     public function __construct(
         private readonly UserUseCase $userUseCase,
-        private readonly ProjectUseCase $projectUseCase
+        private readonly ProjectUseCase $projectUseCase,
+        private readonly TaskUseCase $taskUseCase
     ) {}
 
     #[Route('/', name: 'app_home')]
@@ -24,6 +26,7 @@ final class HomeController extends AbstractController
         return $this->render('home/index.html.twig', [
             'count_users' => $this->userUseCase->countUsers(),
             'count_projects' => $this->projectUseCase->countProjects(),
+            'count_task' => $this->taskUseCase->countTasks(),
         ]);
     }
 }

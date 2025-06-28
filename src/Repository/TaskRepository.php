@@ -37,6 +37,13 @@ class TaskRepository extends ServiceEntityRepository implements TaskInterface
         return $this->createQueryBuilder('t');
     }
 
+    public function countTasks(): int
+    {
+        return (int) $this->createQueryBuilder('t')
+            ->select('COUNT(t.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
     //    /**
     //     * @return Task[] Returns an array of Task objects
     //     */
