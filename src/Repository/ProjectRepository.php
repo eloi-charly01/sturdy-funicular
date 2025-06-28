@@ -45,4 +45,15 @@ class ProjectRepository extends ServiceEntityRepository implements ProjectInterf
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function getTasksCountByProject(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.name AS name, COUNT(t.id) AS count')
+            ->leftJoin('p.tasks', 't')
+            ->groupBy('p.id')
+            ->orderBy('count', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -34,4 +34,9 @@ final class ProjectUseCase
     {
         return $this->projectInterface->countProjects();
     }
+
+    public function getTasksCountByProject(): array
+    {
+        return $this->projectInterface->getTasksCountByProject();
+    }
 }

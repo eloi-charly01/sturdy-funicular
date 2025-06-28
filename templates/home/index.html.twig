@@ -10,12 +10,44 @@
 		<div class="flex justify-between">
 			<h4 class="text-2xl font-semibold text-gray-500">Projets</h4>
 		</div>
-		<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 mt-6 gap-4">
 
+		<div class="grid grid-cols-1 md:grid-cols-3 mt-6 gap-4">
 			{{ include('partials/_widget.html.twig', { title : "Projets", description: "Nombre total de projets"  , total : count_projects}) }}
 			{{ include('partials/_widget.html.twig', { title : "Membres", description: "Nombre total des membres" , total : count_users }) }}
 			{{ include('partials/_widget.html.twig', { title : "Taches", description: "Nombre total des taches" , total : count_task }) }}
 		</div>
-	</div>
 
+		<div class="mt-10 bg-white rounded-md shadow-sm p-4">
+			<h4 class="text-xl font-semibold text-gray-700 mb-4">Tâches par projet</h4>
+
+			<div class="overflow-x-auto bg-white shadow-sm rounded-md border border-gray-200">
+				<table class="min-w-full divide-y divide-gray-200 text-sm text-left">
+					<thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+						<tr>
+							<th class="px-4 py-2">Projet</th>
+							<th class="px-4 py-2 ">Nombre de tâches</th>
+						</tr>
+					</thead>
+					<tbody class="divide-y divide-gray-100">
+						{% for item in tasks_per_project %}
+							<tr class="hover:bg-gray-50 transition">
+								<td class="px-6 py-4 font-medium text-gray-800">
+									{{ item.name }}
+								</td>
+								<td class="px-6 py-4 ">
+									{{ item.count }}
+								</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td colspan="2" class="px-6 py-4 text-center text-sm text-gray-500 italic">
+									Aucun projet trouvé.
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 {% endblock %}

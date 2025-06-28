@@ -23,10 +23,12 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
+        $tasksPerProject = $this->projectUseCase->getTasksCountByProject();
         return $this->render('home/index.html.twig', [
             'count_users' => $this->userUseCase->countUsers(),
             'count_projects' => $this->projectUseCase->countProjects(),
             'count_task' => $this->taskUseCase->countTasks(),
+            'tasks_per_project' => $tasksPerProject
         ]);
     }
 }

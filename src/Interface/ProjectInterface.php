@@ -11,4 +11,5 @@ interface ProjectInterface
     public function createOrUpdate(Project $project): void;
     public function remove(Project $project): void;
     public function countProjects(): int;
+    public function getTasksCountByProject(): array;
 }
