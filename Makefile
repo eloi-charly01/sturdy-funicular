@@ -39,6 +39,8 @@ symfony-serve:
 restart:
 	docker-compose down -v && docker-compose up -d --build
 
+node-install:
+	docker exec -it task_manager_node npm install
 
 node-watch:
 	docker exec -it task_manager_node npm run watch

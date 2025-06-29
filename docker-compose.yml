@@ -26,8 +26,8 @@ services:
         container_name: task_manager_database
         restart: always
         environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: task_manager_db
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
         ports:
             - "3307:3306"
         volumes:
@@ -40,8 +40,8 @@ services:
         ports:
             - "8081:80"
         environment:
-            PMA_HOST: db
-            MYSQL_ROOT_PASSWORD: root
+            PMA_HOST: ${MYSQL_SERVER_HOST}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
         depends_on:
             - db
 
