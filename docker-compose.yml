@@ -1,0 +1,57 @@
+services:
+    php:
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
+        container_name: task_manager_php
+        volumes:
+            - .:/var/www/symfony
+        depends_on:
+            - db
+
+    nginx:
+        build:
+            context: ./docker/nginx
+            dockerfile: Dockerfile
+        container_name: task_manager_nginx
+        ports:
+            - "8080:80"
+        volumes:
+            - .:/var/www/symfony
+        depends_on:
+            - php
+
+    db:
+        image: mysql:8.0.40
+        container_name: task_manager_database
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: task_manager_db
+        ports:
+            - "3307:3306"
+        volumes:
+            - db-data:/var/lib/mysql
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: task_manager_phpmyadmin
+        restart: always
+        ports:
+            - "8081:80"
+        environment:
+            PMA_HOST: db
+            MYSQL_ROOT_PASSWORD: root
+        depends_on:
+            - db
+
+    node:
+        image: node:22.14-alpine
+        container_name: task_manager_node
+        working_dir: /var/www/symfony
+        volumes:
+            - .:/var/www/symfony
+        tty: true
+
+volumes:
+    db-data:
