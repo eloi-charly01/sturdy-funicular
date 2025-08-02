@@ -1,0 +1,30 @@
+name: deploy
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    audit:
+        uses: ./.github/workflows/audit.yml
+    quality:
+        uses: ./.github/workflows/quality.yml
+    test:
+        needs: [audit, quality]
+        uses: ./.github/workflows/test.yml
+
+    deploy:
+        name: Deploy
+        needs: [test]
+        runs-on: ubuntu-latest
+        steps:
+            - name: execute ssh command
+              uses: appleboy/ssh-action@v1.2.0
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  port: ${{ secrets.SSH_PORT }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  script: |
+                      cd /var/www/html
+                      git pull origin main
