@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Enum\StatusEnum;
 use App\Form\TaskForm;
 use App\UseCase\TaskUseCase;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,6 +26,7 @@ final class TaskController extends AbstractController
     {
         return $this->render('task/index.html.twig', [
             'tasks' => $this->taskUseCase->getAllTask($request),
+            'statuses' => StatusEnum::cases(),
         ]);
     }
 
