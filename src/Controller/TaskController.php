@@ -5,9 +5,11 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Enum\StatusEnum;
 use App\Form\TaskForm;
+use App\Repository\TaskRepository;
 use App\UseCase\TaskUseCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -71,4 +73,32 @@ final class TaskController extends AbstractController
 
         return $this->redirectToRoute('app_task.index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/task/update-status', name: 'app_task.update_status', methods: ['POST'])]
+    public function updateStatus(Request $request, TaskRepository $taskRepository, EntityManagerInterface $em): JsonResponse
+    {
+        $data   = json_decode($request->getContent(), true);
+        $taskId = $data['id']     ?? null;
+        $status = $data['status'] ?? null;
+
+        if (!$taskId || !$status) {
+            return new JsonResponse(['error' => 'Données manquantes'], 400);
+        }
+
+        $task = $taskRepository->find($taskId);
+
+        if (!$task) {
+            return new JsonResponse(['error' => 'Tâche introuvable'], 404);
+        }
+
+        // Adapter selon votre enum/classe Status
+        // Exemple avec un BackedEnum PHP 8.1 :
+        $newStatus = StatusEnum::from($status); // ← remplacer TaskStatus par votre enum réel
+        $task->setStatus($newStatus);
+
+        $em->flush();
+
+        return new JsonResponse(['success' => true, 'newStatus' => $status]);
+    }
+
 }

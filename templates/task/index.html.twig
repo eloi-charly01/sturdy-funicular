@@ -22,7 +22,7 @@
             {% for status in statuses %}
                 <div class="flex-1 bg-gray-100 rounded-lg p-4 flex flex-col"
                      data-status="{{ status.value }}">
-                     
+
                     {# Header colonne #}
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-sm font-semibold text-gray-700 uppercase">
@@ -30,23 +30,33 @@
                         </h3>
 
                         {% set count = tasks|filter(task => task.status.value == status.value)|length %}
-                        <span class="text-xs bg-gray-300 px-2 py-1 rounded-full">{{ count }}</span>
+                        <span class="text-xs bg-gray-300 px-2 py-1 rounded-full counter-badge"
+                              id="counter-{{ status.value }}">{{ count }}</span>
                     </div>
 
                     {# Cards container (Sortable) #}
-                    <div class="space-y-4 task-column" data-status="{{ status.value }}">
+                    <div class="space-y-3 task-column min-h-[60px]"
+                         id="column-{{ status.value }}"
+                         data-status="{{ status.value }}">
+
                         {% for task in tasks %}
                             {% if task.status.value == status.value %}
-                                <div class="bg-white rounded-lg shadow p-4 hover:shadow-md transition task-card"
+                                <div class="bg-white rounded-lg shadow p-4 hover:shadow-md transition task-card cursor-grab active:cursor-grabbing select-none"
                                      data-task-id="{{ task.id }}">
 
-                                    <div class="flex justify-between items-center mb-2">
-                                        <div class="font-semibold text-gray-800">
+                                    {# Drag handle visuel #}
+                                    <div class="drag-handle flex justify-between items-start mb-2">
+                                        <div class="font-semibold text-gray-800 text-sm">
                                             {{ task.title }}
                                         </div>
-                                        <span class="px-2 py-1 text-xs rounded-full {{ status.colorClass() }}">
-                                            {{ status.label() }}
-                                        </span>
+                                        <div class="flex items-center gap-2 ml-2">
+                                            <span class="px-2 py-1 text-xs rounded-full {{ status.colorClass() }}">
+                                                {{ status.label() }}
+                                            </span>
+                                            <svg class="w-4 h-4 text-gray-300 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M7 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-6 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                                            </svg>
+                                        </div>
                                     </div>
 
                                     <div class="text-xs text-gray-500 mb-1">
@@ -76,7 +86,7 @@
                         {% endfor %}
 
                         {% if tasks|filter(task => task.status.value == status.value)|length == 0 %}
-                            <p class="text-sm text-gray-400 text-center">Aucune tâche</p>
+                            <p class="empty-label text-sm text-gray-400 text-center py-4">Aucune tâche</p>
                         {% endif %}
                     </div>
 
@@ -87,4 +97,117 @@
     </div>
 
 </div>
+
+{# Toast notification #}
+<div id="toast"
+     class="fixed bottom-6 right-6 px-4 py-3 rounded-lg text-sm font-medium text-white shadow-lg transition-all duration-300 opacity-0 translate-y-4 pointer-events-none z-50">
+</div>
+
+{# SortableJS CDN #}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+
+<script>
+(function () {
+
+    const UPDATE_URL = '/task/update-status'; // ← adapter à votre route Symfony
+
+    // ---------- Toast ----------
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = `fixed bottom-6 right-6 px-4 py-3 rounded-lg text-sm font-medium text-white shadow-lg transition-all duration-300 z-50 ${
+            type === 'success' ? 'bg-green-600' : 'bg-red-500'
+        }`;
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(1rem)';
+        }, 3000);
+    }
+
+    // ---------- Mise à jour compteurs ----------
+    function updateCounters() {
+        document.querySelectorAll('.task-column').forEach(col => {
+            const status = col.dataset.status;
+            const count  = col.querySelectorAll('.task-card').length;
+            const badge  = document.getElementById('counter-' + status);
+            if (badge) badge.textContent = count;
+
+            // Afficher/masquer le label "Aucune tâche"
+            let empty = col.querySelector('.empty-label');
+            if (count === 0) {
+                if (!empty) {
+                    empty = document.createElement('p');
+                    empty.className = 'empty-label text-sm text-gray-400 text-center py-4';
+                    empty.textContent = 'Aucune tâche';
+                    col.appendChild(empty);
+                }
+            } else if (empty) {
+                empty.remove();
+            }
+        });
+    }
+
+    // ---------- Appel AJAX ----------
+    async function persistStatusChange(taskId, newStatus) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+        try {
+            const response = await fetch(UPDATE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: JSON.stringify({ id: taskId, status: newStatus }),
+            });
+
+            if (!response.ok) throw new Error('Erreur serveur ' + response.status);
+
+            showToast('Statut mis à jour', 'success');
+        } catch (err) {
+            console.error(err);
+            showToast('Échec de la mise à jour', 'error');
+        }
+    }
+
+    // ---------- Initialisation SortableJS ----------
+    document.querySelectorAll('.task-column').forEach(column => {
+        new Sortable(column, {
+            group: 'tasks',          // même groupe → glisser entre colonnes
+            animation: 150,
+            ghostClass: 'opacity-40',
+            chosenClass: 'ring-2 ring-indigo-400',
+            dragClass: 'shadow-xl rotate-1',
+            handle: '.task-card',    // toute la carte est draggable
+
+            onEnd(evt) {
+                const card      = evt.item;
+                const taskId    = card.dataset.taskId;
+                const newStatus = evt.to.dataset.status;
+                const oldStatus = evt.from.dataset.status;
+
+                if (newStatus === oldStatus && evt.oldIndex === evt.newIndex) return;
+
+                // Mettre à jour le badge de statut affiché sur la carte
+                const badge = card.querySelector('[class*="rounded-full"]');
+                if (badge) {
+                    // On recharge la page si on veut avoir la vraie couleur du badge,
+                    // sinon on retire le label sans couleur (optionnel UX)
+                    badge.textContent = evt.to.closest('[data-status]').dataset.status;
+                }
+
+                updateCounters();
+
+                if (newStatus !== oldStatus) {
+                    persistStatusChange(taskId, newStatus);
+                }
+            },
+        });
+    });
+
+})();
+</script>
 {% endblock %}
