@@ -5,12 +5,14 @@ namespace App\UseCase;
 use App\Entity\Project;
 use App\Interface\ProjectInterface;
 use App\Shared\PaginationShared;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 final class ProjectUseCase
 {
     public function __construct(
-        private readonly ProjectInterface $projectInterface
+        private readonly ProjectInterface $projectInterface,
+        private readonly Security $security
     ) {}
 
     public function getProjects(Request $request)
@@ -22,6 +24,10 @@ final class ProjectUseCase
 
     public function createOrUpdate(Project $project)
     {
+        if (!$project->getOwner()) {
+            $project->setOwner($this->security->getUser());
+        }
+
         $this->projectInterface->createOrUpdate($project);
     }
 

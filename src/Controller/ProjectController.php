@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Project;
 use App\Form\ProjectForm;
+use App\Security\Voter\ProjectVoter;
 use App\UseCase\ProjectUseCase;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,13 +27,16 @@ final class ProjectController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     #[Route('/create-new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, ?Project $project): Response
     {
         if (!$project) {
             $project = new Project();
+        } elseif (!$this->isGranted(ProjectVoter::EDIT, $project)) {
+            throw $this->createAccessDeniedException();
         }
+
         $form = $this->createForm(ProjectForm::class, $project);
         $form->handleRequest($request);
 
@@ -49,7 +52,8 @@ final class ProjectController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[IsGranted(ProjectVoter::VIEW, subject: 'project')]
     public function show(Project $project): Response
     {
         return $this->render('project/show.html.twig', [
@@ -57,7 +61,8 @@ final class ProjectController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted(ProjectVoter::DELETE, subject: 'project')]
     public function delete(Request $request, Project $project): Response
     {
         if ($this->isCsrfTokenValid('delete' . $project->getId(), $request->getPayload()->getString('_token'))) {

@@ -34,7 +34,14 @@ class TaskRepository extends ServiceEntityRepository implements TaskInterface
 
     public function getAllTask(): QueryBuilder
     {
-        return $this->createQueryBuilder('t');
+        return $this->createQueryBuilder('t')
+            ->orderBy('t.createdAt', 'DESC')
+            ->addOrderBy('t.id', 'DESC');
+    }
+
+    public function findTask(int $id): ?Task
+    {
+        return $this->find($id);
     }
 
     public function countTasks(): int

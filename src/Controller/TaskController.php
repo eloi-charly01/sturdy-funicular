@@ -5,9 +5,8 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Enum\StatusEnum;
 use App\Form\TaskForm;
-use App\Repository\TaskRepository;
+use App\Security\Voter\TaskVoter;
 use App\UseCase\TaskUseCase;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,13 +15,13 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_USER')]
-
 #[Route('/task', name: 'app_task.')]
 final class TaskController extends AbstractController
 {
     public function __construct(
         private readonly TaskUseCase $taskUseCase
     ) {}
+
     #[Route(name: 'index', methods: ['GET'])]
     public function index(Request $request): Response
     {
@@ -32,13 +31,57 @@ final class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/update-status', name: 'update_status', methods: ['POST'])]
+    public function updateStatus(Request $request): JsonResponse
+    {
+        if (!$this->isCsrfTokenValid('task-status', (string) $request->headers->get('X-CSRF-TOKEN'))) {
+            return new JsonResponse(['error' => 'Jeton CSRF invalide'], Response::HTTP_FORBIDDEN);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!is_array($data)) {
+            return new JsonResponse(['error' => 'Corps de requête invalide'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $taskId = $data['id'] ?? null;
+        $status = $data['status'] ?? null;
+
+        if (!is_numeric($taskId) || !is_string($status)) {
+            return new JsonResponse(['error' => 'Données manquantes'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $newStatus = StatusEnum::tryFrom($status);
+
+        if (!$newStatus) {
+            return new JsonResponse(['error' => 'Statut inconnu'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $task = $this->taskUseCase->find((int) $taskId);
+
+        if (!$task) {
+            return new JsonResponse(['error' => 'Tâche introuvable'], Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$this->isGranted(TaskVoter::CHANGE_STATUS, $task)) {
+            return new JsonResponse(['error' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
+        }
+
+        $this->taskUseCase->changeStatus($task, $newStatus);
+
+        return new JsonResponse(['success' => true, 'newStatus' => $newStatus->value]);
+    }
+
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, ?Task $task): Response
     {
         if (!$task) {
             $task = new Task();
+        } elseif (!$this->isGranted(TaskVoter::EDIT, $task)) {
+            throw $this->createAccessDeniedException();
         }
+
         $form = $this->createForm(TaskForm::class, $task);
         $form->handleRequest($request);
 
@@ -55,7 +98,8 @@ final class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[IsGranted(TaskVoter::VIEW, subject: 'task')]
     public function show(Task $task): Response
     {
         return $this->render('task/show.html.twig', [
@@ -63,42 +107,14 @@ final class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'delete', methods: ['POST'])]
-    public function delete(Request $request, Task $task, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted(TaskVoter::DELETE, subject: 'task')]
+    public function delete(Request $request, Task $task): Response
     {
         if ($this->isCsrfTokenValid('delete' . $task->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($task);
-            $entityManager->flush();
+            $this->taskUseCase->remove($task);
         }
 
         return $this->redirectToRoute('app_task.index', [], Response::HTTP_SEE_OTHER);
     }
-
-    #[Route('/task/update-status', name: 'app_task.update_status', methods: ['POST'])]
-    public function updateStatus(Request $request, TaskRepository $taskRepository, EntityManagerInterface $em): JsonResponse
-    {
-        $data   = json_decode($request->getContent(), true);
-        $taskId = $data['id']     ?? null;
-        $status = $data['status'] ?? null;
-
-        if (!$taskId || !$status) {
-            return new JsonResponse(['error' => 'Données manquantes'], 400);
-        }
-
-        $task = $taskRepository->find($taskId);
-
-        if (!$task) {
-            return new JsonResponse(['error' => 'Tâche introuvable'], 404);
-        }
-
-        // Adapter selon votre enum/classe Status
-        // Exemple avec un BackedEnum PHP 8.1 :
-        $newStatus = StatusEnum::from($status); // ← remplacer TaskStatus par votre enum réel
-        $task->setStatus($newStatus);
-
-        $em->flush();
-
-        return new JsonResponse(['success' => true, 'newStatus' => $status]);
-    }
-
 }

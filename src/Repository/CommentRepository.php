@@ -23,6 +23,12 @@ class CommentRepository extends ServiceEntityRepository implements CommentInterf
         $this->getEntityManager()->flush();
     }
 
+    public function deleteComment(Comment $comment): void
+    {
+        $this->getEntityManager()->remove($comment);
+        $this->getEntityManager()->flush();
+    }
+
     //    /**
     //     * @return Comment[] Returns an array of Comment objects
     //     */

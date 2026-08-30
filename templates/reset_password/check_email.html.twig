@@ -1,0 +1,33 @@
+{% extends 'base_auth.html.twig' %}
+
+{% block title %}Email envoyé - Task M{% endblock %}
+
+{% block body %}
+	<div class="min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+		<div class="sm:mx-auto sm:w-full sm:max-w-md">
+			<div class="bg-white py-8 px-6 shadow rounded-lg sm:px-10 space-y-4 text-center">
+				<div class="flex justify-center">
+					<div class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center text-white text-2xl">
+						<i class="fas fa-envelope-open-text"></i>
+					</div>
+				</div>
+
+				<h1 class="text-lg font-semibold text-gray-800">Vérifiez votre boîte mail</h1>
+
+				<p class="text-sm text-gray-600">
+					Si un compte correspond à cette adresse, un email contenant un lien de réinitialisation vient d'être envoyé.
+					Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+				</p>
+
+				<p class="text-sm text-gray-500">
+					Si vous ne recevez rien, vérifiez vos spams ou
+					<a href="{{ path('app_forgot_password_request') }}" class="font-medium text-indigo-600 hover:text-indigo-500">réessayez</a>.
+				</p>
+
+				<a href="{{ path('app_login') }}" class="inline-block text-sm font-medium text-indigo-600 hover:text-indigo-500">
+					Retour à la connexion
+				</a>
+			</div>
+		</div>
+	</div>
+{% endblock %}

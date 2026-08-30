@@ -25,47 +25,8 @@ final class CommentUseCase
         $this->commentInterface->createComment($comment);
     }
 
-
-    public function deleteComment(int $commentId): void
+    public function deleteComment(Comment $comment): void
     {
-        // Logic to delete a comment by its ID
-        // This could involve interacting with a repository or service
-        // to remove the comment from the database.
-
-        // Example:
-        // $this->commentRepository->delete($commentId);
-    }
-
-    public function getCommentsByTaskId(int $taskId): array
-    {
-        // Logic to fetch comments for a specific task by its ID
-        // This could involve interacting with a repository or service
-        // to retrieve comments from the database.
-
-        // Example:
-        // return $this->commentRepository->findBy(['taskId' => $taskId]);
-
-        return []; // Placeholder return for example purposes
-    }
-
-    public function getAllComments(): array
-    {
-
-
-        return [];
-    }
-
-    public function updateComment(int $commentId, string $content): void
-    {
-        // Logic to update a comment's content by its ID
-        // This could involve interacting with a repository or service
-        // to update the comment in the database.
-
-        // Example:
-        // $comment = $this->commentRepository->find($commentId);
-        // if ($comment) {
-        //     $comment->setContent($content);
-        //     $this->commentRepository->save($comment);
-        // }
+        $this->commentInterface->deleteComment($comment);
     }
 }

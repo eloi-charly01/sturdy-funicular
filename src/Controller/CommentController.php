@@ -17,24 +17,37 @@ final class CommentController extends AbstractController
 {
 
     public function __construct(private readonly CommentUseCase $commentUseCase) {}
-    #[Route('/index', name: 'index', methods: ['GET'])]
-    public function index()
-    {
-        // This method will handle the display of comments
-        // Logic to fetch and display comments goes here
-    }
 
     #[Route('/create/{task}', name: 'create', methods: ['POST'], requirements: ['task' => '\d+'])]
     public function create(Request $request, Task $task): Response
     {
-        $content = $request->request->get('content');
-        $this->commentUseCase->createComment($task, $content);
+        if (!$this->isCsrfTokenValid('comment' . $task->getId(), $request->getPayload()->getString('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $content = trim($request->request->getString('content'));
+
+        if ($content !== '') {
+            $this->commentUseCase->createComment($task, $content);
+        }
+
         return $this->redirectToRoute('app_task.show', ['id' => $task->getId()]);
     }
 
-    public function delete()
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function delete(Request $request, Comment $comment): Response
     {
-        // This method will handle the deletion of a comment
-        // Logic to delete a comment goes here
+        if (!$this->isCsrfTokenValid('delete-comment' . $comment->getId(), $request->getPayload()->getString('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if ($comment->getAuthor() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $taskId = $comment->getTask()->getId();
+        $this->commentUseCase->deleteComment($comment);
+
+        return $this->redirectToRoute('app_task.show', ['id' => $taskId]);
     }
 }

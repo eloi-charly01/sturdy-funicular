@@ -3,8 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Project;
+use App\Enum\ProjectStatusEnum;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,13 +22,9 @@ class ProjectForm extends AbstractType
             ->add('description', TextareaType::class, [
                 'required' => true,
             ])
-            ->add('status', ChoiceType::class, [
-                'choices' => [
-                    'En cours' => 'En cours',
-                    'Terminé' => 'Terminé',
-                    'Annulé' => 'Annulé',
-                    'En attente' => 'En attente',
-                ]
+            ->add('status', EnumType::class, [
+                'class' => ProjectStatusEnum::class,
+                'choice_label' => fn(ProjectStatusEnum $choice) => $choice->label(),
             ])
             ->add('acronyme', TextType::class, [
                 'required' => true,

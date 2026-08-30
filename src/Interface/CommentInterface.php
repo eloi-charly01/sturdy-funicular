@@ -8,11 +8,5 @@ interface CommentInterface
 {
     public function createComment(Comment $comment): void;
 
-    // public function deleteComment(int $commentId): void;
-
-    // public function getCommentsByTaskId(int $taskId): array;
-
-    // public function getAllComments(): array;
-
-    // public function updateComment(int $commentId, string $content): void;
+    public function deleteComment(Comment $comment): void;
 }

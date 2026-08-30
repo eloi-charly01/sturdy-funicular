@@ -53,5 +53,12 @@ services:
             - .:/var/www/symfony
         tty: true
 
+    mailpit:
+        image: axllent/mailpit:latest
+        container_name: task_manager_mailpit
+        restart: always
+        ports:
+            - "8025:8025"
+
 volumes:
     db-data:

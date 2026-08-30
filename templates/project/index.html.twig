@@ -40,13 +40,8 @@
 									<div class="text-sm text-gray-500 line-clamp-1">{{ project.description }}</div>
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap">
-									{% set status_classes = {
-                            'en_cours': 'bg-yellow-100 text-yellow-800',
-                            'termine': 'bg-green-100 text-green-800',
-                            'archive': 'bg-gray-100 text-gray-800'
-                        } %}
-									<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ status_classes[project.status]|default('bg-blue-100 text-blue-800') }}">
-										{{ project.status|replace({'_': ' '})|title }}
+									<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ project.status.colorClass }}">
+										{{ project.status.label }}
 									</span>
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

@@ -3,7 +3,9 @@
 {% block title %} Gestion de tickets {% endblock %}
 
 {% block body %}
-<div class="overflow-hidden">
+<div class="overflow-hidden"
+     data-controller="kanban"
+     data-kanban-url-value="{{ path('app_task.update_status') }}">
 
     <div class="mb-6 flex justify-between items-center">
         <h4 class="text-2xl font-semibold text-gray-700">Gestion des tickets</h4>
@@ -37,7 +39,10 @@
                     {# Cards container (Sortable) #}
                     <div class="space-y-3 task-column min-h-[60px]"
                          id="column-{{ status.value }}"
-                         data-status="{{ status.value }}">
+                         data-kanban-target="column"
+                         data-status="{{ status.value }}"
+                         data-status-label="{{ status.label() }}"
+                         data-status-class="{{ status.colorClass() }}">
 
                         {% for task in tasks %}
                             {% if task.status.value == status.value %}
@@ -50,7 +55,7 @@
                                             {{ task.title }}
                                         </div>
                                         <div class="flex items-center gap-2 ml-2">
-                                            <span class="px-2 py-1 text-xs rounded-full {{ status.colorClass() }}">
+                                            <span data-status-badge class="px-2 py-1 text-xs rounded-full {{ status.colorClass() }}">
                                                 {{ status.label() }}
                                             </span>
                                             <svg class="w-4 h-4 text-gray-300 shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -96,118 +101,10 @@
         </div>
     </div>
 
+    {# Toast notification #}
+    <div data-kanban-target="toast"
+         class="fixed bottom-6 right-6 px-4 py-3 rounded-lg text-sm font-medium text-white shadow-lg transition-all duration-300 opacity-0 translate-y-4 pointer-events-none z-50">
+    </div>
+
 </div>
-
-{# Toast notification #}
-<div id="toast"
-     class="fixed bottom-6 right-6 px-4 py-3 rounded-lg text-sm font-medium text-white shadow-lg transition-all duration-300 opacity-0 translate-y-4 pointer-events-none z-50">
-</div>
-
-{# SortableJS CDN #}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
-
-<script>
-(function () {
-
-    const UPDATE_URL = '/task/update-status'; // ← adapter à votre route Symfony
-
-    // ---------- Toast ----------
-    function showToast(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.className = `fixed bottom-6 right-6 px-4 py-3 rounded-lg text-sm font-medium text-white shadow-lg transition-all duration-300 z-50 ${
-            type === 'success' ? 'bg-green-600' : 'bg-red-500'
-        }`;
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateY(0)';
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateY(1rem)';
-        }, 3000);
-    }
-
-    // ---------- Mise à jour compteurs ----------
-    function updateCounters() {
-        document.querySelectorAll('.task-column').forEach(col => {
-            const status = col.dataset.status;
-            const count  = col.querySelectorAll('.task-card').length;
-            const badge  = document.getElementById('counter-' + status);
-            if (badge) badge.textContent = count;
-
-            // Afficher/masquer le label "Aucune tâche"
-            let empty = col.querySelector('.empty-label');
-            if (count === 0) {
-                if (!empty) {
-                    empty = document.createElement('p');
-                    empty.className = 'empty-label text-sm text-gray-400 text-center py-4';
-                    empty.textContent = 'Aucune tâche';
-                    col.appendChild(empty);
-                }
-            } else if (empty) {
-                empty.remove();
-            }
-        });
-    }
-
-    // ---------- Appel AJAX ----------
-    async function persistStatusChange(taskId, newStatus) {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
-
-        try {
-            const response = await fetch(UPDATE_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': csrfToken,
-                },
-                body: JSON.stringify({ id: taskId, status: newStatus }),
-            });
-
-            if (!response.ok) throw new Error('Erreur serveur ' + response.status);
-
-            showToast('Statut mis à jour', 'success');
-        } catch (err) {
-            console.error(err);
-            showToast('Échec de la mise à jour', 'error');
-        }
-    }
-
-    // ---------- Initialisation SortableJS ----------
-    document.querySelectorAll('.task-column').forEach(column => {
-        new Sortable(column, {
-            group: 'tasks',          // même groupe → glisser entre colonnes
-            animation: 150,
-            ghostClass: 'opacity-40',
-            chosenClass: 'ring-2 ring-indigo-400',
-            dragClass: 'shadow-xl rotate-1',
-            handle: '.task-card',    // toute la carte est draggable
-
-            onEnd(evt) {
-                const card      = evt.item;
-                const taskId    = card.dataset.taskId;
-                const newStatus = evt.to.dataset.status;
-                const oldStatus = evt.from.dataset.status;
-
-                if (newStatus === oldStatus && evt.oldIndex === evt.newIndex) return;
-
-                // Mettre à jour le badge de statut affiché sur la carte
-                const badge = card.querySelector('[class*="rounded-full"]');
-                if (badge) {
-                    // On recharge la page si on veut avoir la vraie couleur du badge,
-                    // sinon on retire le label sans couleur (optionnel UX)
-                    badge.textContent = evt.to.closest('[data-status]').dataset.status;
-                }
-
-                updateCounters();
-
-                if (newStatus !== oldStatus) {
-                    persistStatusChange(taskId, newStatus);
-                }
-            },
-        });
-    });
-
-})();
-</script>
 {% endblock %}

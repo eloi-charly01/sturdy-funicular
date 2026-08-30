@@ -35,11 +35,8 @@
 						<p class="text-sm text-gray-500 mt-1">Créé le
 							{{ project.createdAt|date('d/m/Y') }}</p>
 					</div>
-					<span class="px-3 py-1 rounded-full text-xs font-semibold
-																																			                    {% if project.status == 'en_cours' %}bg-yellow-100 text-yellow-800
-																																			                    {% elseif project.status == 'termine' %}bg-green-100 text-green-800
-																																			                    {% else %}bg-gray-100 text-gray-800{% endif %}">
-						{{ project.status|replace({'_': ' '})|title }}
+					<span class="px-3 py-1 rounded-full text-xs font-semibold {{ project.status.colorClass }}">
+						{{ project.status.label }}
 					</span>
 				</div>
 			</div>

@@ -30,6 +30,12 @@ fixtures:
 cache-clear:
 	docker exec -it $(PHP_CONTAINER) php bin/console cache:clear
 
+test:
+	docker exec -it $(PHP_CONTAINER) php bin/phpunit
+
+audit:
+	docker exec -it $(PHP_CONTAINER) composer audit
+
 permissions:
 	sudo chmod -R 777 var
 

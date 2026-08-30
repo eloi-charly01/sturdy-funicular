@@ -71,6 +71,7 @@
 			<h2 class="text-lg font-bold text-gray-800 border-b pb-2">Commentaires</h2>
 
 			<form method="post" action="{{ path('app_comment.create', {'task': task.id}) }}" class="space-y-4">
+				<input type="hidden" name="_token" value="{{ csrf_token('comment' ~ task.id) }}">
 				<div>
 					<label for="comment_content" class="block text-sm font-medium text-gray-700 mb-1">Ajouter un commentaire</label>
 					<textarea id="comment_content" name="content" rows="4" class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-md" placeholder="Saisissez votre commentaire ici..."></textarea>
@@ -95,6 +96,12 @@
 								<span class="text-xs text-gray-500">{{ comment.createdAt|date('d/m/Y H:i') }}</span>
 							</div>
 							<p class="text-gray-700 text-sm mt-2 whitespace-pre-line">{{ comment.content }}</p>
+							{% if comment.author == app.user or is_granted('ROLE_ADMIN') %}
+								<form method="post" action="{{ path('app_comment.delete', {'id': comment.id}) }}" class="mt-2 flex justify-end" onsubmit="return confirm('Supprimer ce commentaire ?');">
+									<input type="hidden" name="_token" value="{{ csrf_token('delete-comment' ~ comment.id) }}">
+									<button type="submit" class="text-xs text-red-600 hover:text-red-800">Supprimer</button>
+								</form>
+							{% endif %}
 						</div>
 					{% endfor %}
 				</div>

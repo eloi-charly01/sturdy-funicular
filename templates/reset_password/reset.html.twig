@@ -1,0 +1,32 @@
+{% extends 'base_auth.html.twig' %}
+
+{% block title %}Nouveau mot de passe - Task M{% endblock %}
+
+{% block body %}
+	<div class="min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+		<div class="sm:mx-auto sm:w-full sm:max-w-md">
+			<div class="bg-white py-8 px-6 shadow rounded-lg sm:px-10 space-y-6">
+				<div class="flex justify-center">
+					<div class="w-16 h-16 rounded-full bg-indigo-600 flex items-center justify-center text-white text-2xl">
+						<i class="fas fa-lock"></i>
+					</div>
+				</div>
+
+				<h1 class="text-center text-lg font-semibold text-gray-800">Choisissez un nouveau mot de passe</h1>
+
+				{{ form_start(resetForm) }}
+				<div>
+					{{ form_label(resetForm.plainPassword, 'Nouveau mot de passe', { label_attr: { class: 'block text-sm font-medium text-gray-700' } }) }}
+					{{ form_widget(resetForm.plainPassword, { attr: { class: 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm' } }) }}
+					{{ form_errors(resetForm.plainPassword) }}
+				</div>
+
+				<button type="submit" class="mt-4 w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+					<i class="fas fa-check mr-2"></i>
+					Réinitialiser
+				</button>
+				{{ form_end(resetForm) }}
+			</div>
+		</div>
+	</div>
+{% endblock %}

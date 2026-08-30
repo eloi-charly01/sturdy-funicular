@@ -3,6 +3,7 @@
 namespace App\UseCase;
 
 use App\Entity\Task;
+use App\Enum\StatusEnum;
 use App\Interface\TaskInterface;
 use App\Shared\PaginationShared;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -21,9 +22,23 @@ final class TaskUseCase
         return PaginationShared::paginate($this->taskInterface->getAllTask(), $page);
     }
 
+    public function find(int $id): ?Task
+    {
+        return $this->taskInterface->findTask($id);
+    }
+
+    public function changeStatus(Task $task, StatusEnum $status): void
+    {
+        $task->setStatus($status);
+        $this->taskInterface->createOrUpdate($task);
+    }
+
     public function createOrUpdate(Task $task)
     {
-        $task->setResponsability($this->security->getUser());
+        if (!$task->getResponsability()) {
+            $task->setResponsability($this->security->getUser());
+        }
+
         return $this->taskInterface->createOrUpdate($task);
     }
 

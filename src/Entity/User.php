@@ -81,11 +81,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'author', orphanRemoval: true)]
     private Collection $comments;
 
+    /**
+     * @var Collection<int, Project>
+     */
+    #[ORM\OneToMany(targetEntity: Project::class, mappedBy: 'owner')]
+    private Collection $ownedProjects;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
         $this->responsabilityTasks = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->ownedProjects = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -365,6 +372,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($comment->getAuthor() === $this) {
                 $comment->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Project>
+     */
+    public function getOwnedProjects(): Collection
+    {
+        return $this->ownedProjects;
+    }
+
+    public function addOwnedProject(Project $ownedProject): static
+    {
+        if (!$this->ownedProjects->contains($ownedProject)) {
+            $this->ownedProjects->add($ownedProject);
+            $ownedProject->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOwnedProject(Project $ownedProject): static
+    {
+        if ($this->ownedProjects->removeElement($ownedProject)) {
+            if ($ownedProject->getOwner() === $this) {
+                $ownedProject->setOwner(null);
             }
         }
 

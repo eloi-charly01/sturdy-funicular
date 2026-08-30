@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\ProjectStatusEnum;
 use App\Repository\ProjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -23,11 +24,14 @@ class Project
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    #[ORM\Column(length: 32, enumType: ProjectStatusEnum::class)]
+    private ?ProjectStatusEnum $status = null;
 
     #[ORM\Column(length: 10)]
     private ?string $acronyme = null;
+
+    #[ORM\ManyToOne(inversedBy: 'ownedProjects')]
+    private ?User $owner = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -75,14 +79,26 @@ class Project
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?ProjectStatusEnum
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(ProjectStatusEnum $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
 
         return $this;
     }

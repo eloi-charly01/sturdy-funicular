@@ -20,7 +20,9 @@ class ProjectRepository extends ServiceEntityRepository implements ProjectInterf
 
     public function getProjects(): QueryBuilder
     {
-        return $this->createQueryBuilder('p');
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.createdAt', 'DESC')
+            ->addOrderBy('p.id', 'DESC');
     }
 
     public function createOrUpdate(Project $project): void
