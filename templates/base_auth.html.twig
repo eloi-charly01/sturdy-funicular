@@ -4,8 +4,9 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>
-			{% block title %}Task M{% endblock %}
+			{% block title %}TaskManager{% endblock %}
 		</title>
+		<link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
@@ -14,7 +15,7 @@
 			{{ encore_entry_script_tags('app') }}
 		{% endblock %}
 	</head>
-	<body class="bg-gray-100">
+	<body class="min-h-screen bg-surface-muted text-ink">
 		{% block body %}{% endblock %}
 	</body>
 </html>

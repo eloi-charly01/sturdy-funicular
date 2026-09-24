@@ -1,86 +1,66 @@
+{% set field_classes = 'block w-full rounded-md border border-border bg-surface px-3.5 py-2 text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-focus-ring' %}
+{% set label_classes = 'block text-sm font-medium text-ink mb-1.5' %}
+
+{{ form_start(registrationForm, { 'attr': { 'enctype': 'multipart/form-data', 'class': 'space-y-5' } }) }}
+
+{% if registrationForm.vars.errors|length > 0 %}
+	<div class="mb-4 flex rounded-md bg-danger/10 p-4">
+		<div class="flex-shrink-0">
+			<i class="fas fa-exclamation-circle text-danger"></i>
+		</div>
+		<div class="ml-3 text-danger">
+			{{ form_errors(registrationForm) }}
+		</div>
+	</div>
+{% endif %}
+
 <div>
-	{{ form_start(registrationForm, { 'attr': { 'enctype': 'multipart/form-data' } }) }}
-	{% if registrationForm.vars.errors|length > 0 %}
-		<div class="rounded-md bg-red-50 p-4 mb-4">
-			<div class="flex">
-				<div class="flex-shrink-0">
-					<i class="fas fa-exclamation-circle text-red-500"></i>
-				</div>
-				<div class="ml-3">
-					{{ form_errors(registrationForm) }}
-				</div>
-			</div>
-		</div>
-	{% endif %}
-	{# Form imageFile #}
-
-	<div class="mb-4">
-		{{ form_label(registrationForm.imageFile, 'Inserer l\'image', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-		<div class="mt-1 relative rounded-md shadow-sm">
-			{{ form_widget(registrationForm.imageFile, {'attr': {
-                            'class': 'form-input block w-full pl-4 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
-                        }}) }}
-		</div>
+	{{ form_label(registrationForm.imageFile, 'Inserer l\'image', {'label_attr': {'class': label_classes}}) }}
+	<div class="mt-1">
+		{{ form_widget(registrationForm.imageFile, {'attr': {'class': field_classes}}) }}
 	</div>
+</div>
 
-
-	<div class="mb-4">
-		{{ form_label(registrationForm.firstname, 'Nom du membres', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-		<div class="mt-1 relative rounded-md shadow-sm">
-			{{ form_widget(registrationForm.firstname, {'attr': {
-                            'class': 'form-input block w-full pl-4 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
-                            'placeholder': 'nom ...'
-                        }}) }}
-		</div>
+<div>
+	{{ form_label(registrationForm.firstname, 'Nom du membre', {'label_attr': {'class': label_classes}}) }}
+	<div class="mt-1">
+		{{ form_widget(registrationForm.firstname, {'attr': {'class': field_classes, 'placeholder': 'nom ...'}}) }}
 	</div>
-	<div class="mb-4">
-		{{ form_label(registrationForm.lastname, 'Prénom du membres', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-		<div class="mt-1 relative rounded-md shadow-sm">
-			{{ form_widget(registrationForm.lastname, {'attr': {
-                            'class': 'form-input block w-full pl-4 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
-                            'placeholder': 'Prénom ...'
-                        }}) }}
-		</div>
+</div>
+<div>
+	{{ form_label(registrationForm.lastname, 'Prénom du membre', {'label_attr': {'class': label_classes}}) }}
+	<div class="mt-1">
+		{{ form_widget(registrationForm.lastname, {'attr': {'class': field_classes, 'placeholder': 'Prénom ...'}}) }}
 	</div>
+</div>
 
-	<div class="mb-4">
-		{{ form_label(registrationForm.phone, 'Numero telephone du membres', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-		<div class="mt-1 relative rounded-md shadow-sm">
-			{{ form_widget(registrationForm.phone, {'attr': {
-                            'class': 'form-input block w-full pl-4 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
-                            'placeholder': 'Numéro ...'
-                        }}) }}
-		</div>
+<div>
+	{{ form_label(registrationForm.phone, 'Numero telephone du membre', {'label_attr': {'class': label_classes}}) }}
+	<div class="mt-1">
+		{{ form_widget(registrationForm.phone, {'attr': {'class': field_classes, 'placeholder': 'Numéro ...'}}) }}
 	</div>
+</div>
 
-
-	<div class="mb-4">
-		{{ form_label(registrationForm.email, 'Email professionnel', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-		<div class="mt-1 relative rounded-md shadow-sm">
-			{{ form_widget(registrationForm.email, {'attr': {
-                            'class': 'form-input block w-full pl-4 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
-                            'placeholder': 'votre@email.com'
-                        }}) }}
-		</div>
+<div>
+	{{ form_label(registrationForm.email, 'Email professionnel', {'label_attr': {'class': label_classes}}) }}
+	<div class="mt-1">
+		{{ form_widget(registrationForm.email, {'attr': {'class': field_classes, 'placeholder': 'votre@email.com'}}) }}
 	</div>
+</div>
 
+<div>
+	{{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': label_classes}}) }}
+	<div class="mt-1">
+		{{ form_widget(registrationForm.plainPassword, {'attr': {'class': field_classes, 'placeholder': '••••••••'}}) }}
+	</div>
+	<p class="mt-2 text-xs text-ink-muted">Minimum 8 caractères</p>
+</div>
 
-	<div class="mb-4">
-		{{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-		<div class="mt-1 relative rounded-md shadow-sm">
-			{{ form_widget(registrationForm.plainPassword, {'attr': {
-                            'class': 'form-input block w-full pl-4 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
-                            'placeholder': '••••••••'
-                        }}) }}
-		</div>
-		<p class="mt-2 text-xs text-gray-500">Minimum 8 caractères</p>
-	</div>
-	<div>
-		<button type="submit" class="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-			<i class="fas fa-user-plus mr-2"></i>
-			S'inscrire
-		</button>
-	</div>
-	{{ form_end(registrationForm) }}
+{{ include('components/button.html.twig', {
+	type: 'submit',
+	icon: 'fas fa-user-plus',
+	label: "S'inscrire",
+	extra_classes: 'w-full justify-center',
+}) }}
 
-	</div>
+{{ form_end(registrationForm) }}

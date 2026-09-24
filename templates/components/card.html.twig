@@ -1,0 +1,13 @@
+{# components/card.html.twig
+   Requires: body (pre-rendered content).
+   Optional: title, description, extra_classes. #}
+
+<div class="rounded-lg border border-border bg-surface shadow-sm {{ extra_classes is defined and extra_classes ? extra_classes : '' }}">
+	{% if title is defined and title %}
+		<div class="border-b border-border px-6 py-4">
+			<h2 class="text-base font-semibold text-ink">{{ title }}</h2>
+			{% if description is defined and description %}<p class="mt-0.5 text-sm text-ink-muted">{{ description }}</p>{% endif %}
+		</div>
+	{% endif %}
+	<div class="p-6">{{ body }}</div>
+</div>

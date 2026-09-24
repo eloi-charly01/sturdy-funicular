@@ -1,1 +1,68 @@
 @import "tailwindcss";
+
+/*
+ * PENDING brand assets: the --color-brand-* values below are PROVISIONAL.
+ * When the client's brand materials (logo / colors / style guide) arrive,
+ * replace ONLY the --color-brand-* values (and any semantic alias that
+ * references them). The token structure guarantees no template needs to
+ * change when the palette is re-derived.
+ */
+
+@theme {
+	/* Brand primary scale — PROVISIONAL, pending client brand assets */
+	--color-brand-50: #eef4ff;
+	--color-brand-100: #dbe8fe;
+	--color-brand-200: #bfd7fe;
+	--color-brand-300: #93bbfd;
+	--color-brand-400: #6094fa;
+	--color-brand-500: #3b6ff6;
+	--color-brand-600: #1d4fec;
+	--color-brand-700: #173dd9;
+	--color-brand-800: #1933af;
+	--color-brand-900: #1a308b;
+	--color-brand-950: #151f54;
+
+	/* Semantic aliases consumed by templates and components */
+	--color-surface: #ffffff;
+	--color-surface-muted: #f8fafc;
+	--color-surface-active: #eef2f7;
+	--color-border: #e2e8f0;
+	--color-ink: #0f172a;
+	--color-ink-muted: #475569;
+	--color-ink-faint: #64748b;
+	--color-accent: #f59e0b;
+	--color-accent-on: #78350f;
+	--color-success: #15803d;
+	--color-success-on: #ffffff;
+	--color-danger: #b91c1c;
+	--color-danger-on: #ffffff;
+	--color-focus-ring: #1d4fec;
+
+	/* Status semantic tokens — StatusEnum and ProjectStatusEnum map to these */
+	--color-status-open: #dbeafe;
+	--color-status-open-on: #1e40af;
+	--color-status-in-progress: #fef3c7;
+	--color-status-in-progress-on: #92400e;
+	--color-status-done: #dcfce7;
+	--color-status-done-on: #166534;
+	--color-status-close: #f1f5f9;
+	--color-status-close-on: #334155;
+	--color-status-pending: #f1f5f9;
+	--color-status-pending-on: #334155;
+	--color-status-cancelled: #fee2e2;
+	--color-status-cancelled-on: #991b1b;
+
+	/* Typography */
+	--font-sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Single-token class for the kanban drag "chosen" state (Sortable requires a
+   single class name; compound utilities like "ring-2 ring-focus-ring" cannot
+   be passed to classList). */
+@utility drag-chosen {
+	@apply ring-2 ring-focus-ring;
+}
+
+@utility drag-card {
+	@apply shadow-xl rotate-1;
+}

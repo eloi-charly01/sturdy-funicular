@@ -1,30 +1,28 @@
 {% extends 'base_auth.html.twig' %}
 
-{% block title %}Email envoyé - Task M{% endblock %}
+{% block title %}Email envoyé - TaskManager{% endblock %}
 
 {% block body %}
-	<div class="min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
-		<div class="sm:mx-auto sm:w-full sm:max-w-md">
-			<div class="bg-white py-8 px-6 shadow rounded-lg sm:px-10 space-y-4 text-center">
-				<div class="flex justify-center">
-					<div class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center text-white text-2xl">
-						<i class="fas fa-envelope-open-text"></i>
-					</div>
-				</div>
+	<div class="flex min-h-screen items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+		<div class="w-full max-w-md">
+			<div class="rounded-lg border border-border bg-surface px-6 py-8 text-center shadow-sm sm:px-10">
+				<span class="mx-auto flex h-12 w-12 items-center justify-center rounded-md bg-success text-xl text-white">
+					<i class="fas fa-envelope-open-text"></i>
+				</span>
 
-				<h1 class="text-lg font-semibold text-gray-800">Vérifiez votre boîte mail</h1>
+				<h1 class="mt-4 text-lg font-semibold text-ink">Vérifiez votre boîte mail</h1>
 
-				<p class="text-sm text-gray-600">
+				<p class="mt-2 text-sm text-ink-muted">
 					Si un compte correspond à cette adresse, un email contenant un lien de réinitialisation vient d'être envoyé.
 					Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
 				</p>
 
-				<p class="text-sm text-gray-500">
+				<p class="mt-4 text-sm text-ink-faint">
 					Si vous ne recevez rien, vérifiez vos spams ou
-					<a href="{{ path('app_forgot_password_request') }}" class="font-medium text-indigo-600 hover:text-indigo-500">réessayez</a>.
+					<a href="{{ path('app_forgot_password_request') }}" class="font-medium text-brand-600 hover:text-brand-700">réessayez</a>.
 				</p>
 
-				<a href="{{ path('app_login') }}" class="inline-block text-sm font-medium text-indigo-600 hover:text-indigo-500">
+				<a href="{{ path('app_login') }}" class="mt-4 inline-block text-sm font-medium text-brand-600 hover:text-brand-700">
 					Retour à la connexion
 				</a>
 			</div>

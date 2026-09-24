@@ -7,56 +7,67 @@
 
 {% block body %}
 	<div class="overflow-hidden">
-		<div class=" mb-6 flex justify-between items-center">
-			<h4 class="text-2xl font-semibold text-gray-700">Gestion des membres</h4>
+		<div class="mb-6 flex items-center justify-between">
+			<div>
+				<h4 class="text-2xl font-semibold text-ink">Gestion des membres</h4>
+				<p class="mt-1 text-sm text-ink-muted">Les membres de votre équipe</p>
+			</div>
+
+			{{ include('components/button.html.twig', {
+				href: path('app_user.register'),
+				icon: 'fas fa-user-plus',
+				label: 'Nouveau membre',
+			}) }}
 		</div>
 
-		<div class="px-6 py-4 overflow-hidden">
-			<div class="flex justify-end">
-				<a href="{{ path('app_user.register') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-sm font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-					<i class="fas fa-plus mr-2"></i>
-					Nouveau membre
-				</a>
-			</div>
-			<div class="overflow-x-auto mt-4 w-full max-w-full">
-				<div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+		<div class="px-6 py-4">
+			{% if users|length > 0 %}
+				<div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 					{% for user in users %}
-						<div class="py-8 px-4 rounded-md  bg-white">
-							<div class="border-b border-gray-400 pb-6 text-center">
-								<div class="flex justify-center mb-2">
-									<img class="h-28 w-28 rounded-full cursor-pointer" src="https://placehold.co/600x700.png" alt="Profile">
+						<div class="overflow-hidden rounded-lg border border-border bg-surface shadow-sm">
+							<div class="border-b border-border pb-6 text-center">
+								<div class="mb-3 flex justify-center pt-8">
+									{% if user.photo %}
+										<img class="h-20 w-20 cursor-pointer rounded-full object-cover" src="{{ asset('uploads/users/' ~ user.photo) }}" alt="Photo de {{ user.firstname }}">
+									{% else %}
+										<div class="flex h-20 w-20 items-center justify-center rounded-full bg-brand-600 text-xl font-bold text-white">
+											{{ user.firstname|first|upper }}{{ user.lastname|first|upper }}
+										</div>
+									{% endif %}
 								</div>
-								<h4 class="text-gray-700 text-md font-semibold">{{ user.firstname }}
-									<br>
-									{{ user.lastname }}</h4>
-								<div class="mb-2 text-center">
-									<span class="text-gray-400 text-sm mt-4">
-										<i class="fas fa-envelope"></i>
-										{{ user.email }}
-									</span>
+								<h4 class="text-md font-semibold text-ink">
+									{{ user.firstname }}<br>{{ user.lastname }}
+								</h4>
+								<div class="my-2 text-center text-sm text-ink-muted">
+									<i class="fas fa-envelope mr-1.5"></i>
+									{{ user.email }}
 								</div>
+								{% if user.phone %}
+									<div class="text-center text-sm text-ink-muted">
+										<i class="fas fa-phone mr-1.5"></i>
+										{{ user.phone }}
+									</div>
+								{% endif %}
 							</div>
-							<div class="mt-6">
-								<h5 class="text-gray-500 text-sm font-normal text-center">Complate Total 18 Project</h5>
-								<div class="flex justify-between gap-4 mt-6">
-									<div class="bg-gray-200 px-4 py-2 rounded-sm">
-										<i class="fas fa-message text-gray-400"></i>
-									</div>
-									<div class="bg-gray-200 px-6 py-2 rounded-sm">
-										<i class="fas fa-phone text-gray-400"></i>
-									</div>
-									<div class="bg-gray-200 px-6 py-2 rounded-sm">
-										<i class="fas fa-envelope text-gray-400"></i>
-									</div>
-								</div>
+							<div class="mt-4 flex justify-center gap-2 pb-6">
+								<span class="rounded-md bg-surface-active px-3 py-2 text-ink-muted">
+									<i class="fas fa-envelope"></i>
+								</span>
+								<span class="rounded-md bg-surface-active px-4 py-2 text-ink-muted">
+									<i class="fas fa-phone"></i>
+								</span>
 							</div>
-
 						</div>
 					{% endfor %}
 				</div>
-			</div>
+			{% else %}
+				{% include 'components/empty_state.html.twig' with {
+					icon: 'fas fa-users',
+					title: 'Aucun membre',
+					message: 'Invitez votre premier membre pour constituer votre équipe.',
+				} %}
+			{% endif %}
 			{{ include ("partials/_pagination.html.twig", { pager : users })}}
 		</div>
 	</div>
-
 {% endblock %}

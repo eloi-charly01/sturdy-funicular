@@ -3,108 +3,114 @@
 {% block title %} Gestion de tickets {% endblock %}
 
 {% block body %}
-<div class="overflow-hidden"
+<div class="w-full"
      data-controller="kanban"
      data-kanban-url-value="{{ path('app_task.update_status') }}">
 
-    <div class="mb-6 flex justify-between items-center">
-        <h4 class="text-2xl font-semibold text-gray-700">Gestion des tickets</h4>
+	<div class="mb-6 flex justify-between items-center">
+		<div>
+			<h4 class="text-2xl font-semibold text-ink">Gestion des tickets</h4>
+			<p class="mt-1 text-sm text-ink-muted">Glissez-déposez vos tickets pour changer leur statut.</p>
+		</div>
 
-        <a href="{{ path('app_task.new') }}"
-           class="inline-flex items-center px-4 py-2 bg-indigo-600 text-xs text-white uppercase hover:bg-indigo-700">
-            <i class="fas fa-plus mr-2"></i>
-            Nouveau ticket
-        </a>
-    </div>
+		{{ include('components/button.html.twig', {
+			href: path('app_task.new'),
+			icon: 'fas fa-plus',
+			label: 'Nouveau ticket',
+		}) }}
+	</div>
 
-    <div class="overflow-x-auto">
-        <div class="flex w-full space-x-4 p-6 max-h-screen">
+	<div class="overflow-x-auto">
+		<div class="flex w-full gap-4 p-6 max-h-screen">
 
-            {# Boucle sur les statuts #}
-            {% for status in statuses %}
-                <div class="flex-1 bg-gray-100 rounded-lg p-4 flex flex-col"
-                     data-status="{{ status.value }}">
+			{# Boucle sur les statuts #}
+			{% for status in statuses %}
+				<div class="flex flex-1 flex-col rounded-lg bg-surface-muted p-4"
+				     data-status="{{ status.value }}">
 
-                    {# Header colonne #}
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-sm font-semibold text-gray-700 uppercase">
-                            {{ status.label() }}
-                        </h3>
+					{# Header colonne #}
+					<div class="mb-4 flex justify-between items-center">
+						<h3 class="text-sm font-semibold text-ink uppercase tracking-wide">
+							{{ status.label() }}
+						</h3>
 
-                        {% set count = tasks|filter(task => task.status.value == status.value)|length %}
-                        <span class="text-xs bg-gray-300 px-2 py-1 rounded-full counter-badge"
-                              id="counter-{{ status.value }}">{{ count }}</span>
-                    </div>
+						{% set count = tasks|filter(task => task.status.value == status.value)|length %}
+						<span class="counter-badge rounded-full bg-surface-active px-2 py-1 text-xs font-medium text-ink-muted"
+						      id="counter-{{ status.value }}">{{ count }}</span>
+					</div>
 
-                    {# Cards container (Sortable) #}
-                    <div class="space-y-3 task-column min-h-[60px]"
-                         id="column-{{ status.value }}"
-                         data-kanban-target="column"
-                         data-status="{{ status.value }}"
-                         data-status-label="{{ status.label() }}"
-                         data-status-class="{{ status.colorClass() }}">
+					{# Cards container (Sortable) #}
+					<div class="space-y-3 task-column min-h-[60px]"
+					     id="column-{{ status.value }}"
+					     data-kanban-target="column"
+					     data-status="{{ status.value }}"
+					     data-status-label="{{ status.label() }}"
+					     data-status-class="{{ status.colorClass() }}">
 
-                        {% for task in tasks %}
-                            {% if task.status.value == status.value %}
-                                <div class="bg-white rounded-lg shadow p-4 hover:shadow-md transition task-card cursor-grab active:cursor-grabbing select-none"
-                                     data-task-id="{{ task.id }}">
+						{% for task in tasks %}
+							{% if task.status.value == status.value %}
+								<div class="task-card cursor-grab select-none rounded-lg border border-border bg-surface p-4 shadow-sm transition hover:shadow-md active:cursor-grabbing"
+								     data-task-id="{{ task.id }}">
 
-                                    {# Drag handle visuel #}
-                                    <div class="drag-handle flex justify-between items-start mb-2">
-                                        <div class="font-semibold text-gray-800 text-sm">
-                                            {{ task.title }}
-                                        </div>
-                                        <div class="flex items-center gap-2 ml-2">
-                                            <span data-status-badge class="px-2 py-1 text-xs rounded-full {{ status.colorClass() }}">
-                                                {{ status.label() }}
-                                            </span>
-                                            <svg class="w-4 h-4 text-gray-300 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M7 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-6 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
-                                            </svg>
-                                        </div>
-                                    </div>
+									{# Drag handle visuel #}
+									<div class="drag-handle flex justify-between items-start mb-2">
+										<div class="text-sm font-semibold text-ink">
+											{{ task.title }}
+										</div>
+										<div class="flex items-center gap-2 ml-2">
+											<span data-status-badge class="rounded-full px-2.5 py-1 text-xs font-medium {{ status.colorClass() }}">
+												{{ status.label() }}
+											</span>
+											<svg class="w-4 h-4 text-ink-faint shrink-0" fill="currentColor" viewBox="0 0 20 20">
+												<path d="M7 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-6 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+											</svg>
+										</div>
+									</div>
 
-                                    <div class="text-xs text-gray-500 mb-1">
-                                        Projet : {{ task.project.acronyme }}
-                                    </div>
+									<div class="mb-1 text-xs text-ink-muted">
+										<i class="fas fa-folder mr-1.5 text-ink-faint"></i>
+										Projet : {{ task.project.acronyme }}
+									</div>
 
-                                    <div class="text-xs text-gray-500 mb-1">
-                                        Assigné : {{ task.assigned.firstname }}
-                                    </div>
+									<div class="mb-1 text-xs text-ink-muted">
+										<i class="fas fa-user mr-1.5 text-ink-faint"></i>
+										Assigné : {{ task.assigned.firstname }}
+									</div>
 
-                                    <div class="text-xs text-gray-500 mb-3">
-                                        Deadline : {{ task.finishedAt ? task.finishedAt|date('Y/m/d') : 'N/A' }}
-                                    </div>
+									<div class="mb-3 text-xs text-ink-muted">
+										<i class="fas fa-calendar mr-1.5 text-ink-faint"></i>
+										Deadline : {{ task.finishedAt ? task.finishedAt|date('Y/m/d') : 'N/A' }}
+									</div>
 
-                                    <div class="flex space-x-3 mt-3 text-sm">
-                                        <a href="{{ path('app_task.show', {'id': task.id}) }}" class="text-indigo-600">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ path('app_task.edit', {'id': task.id}) }}" class="text-yellow-600">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        {% include "task/_delete_form.html.twig" %}
-                                    </div>
+									<div class="mt-3 flex space-x-3 border-t border-border pt-3 text-sm">
+										<a href="{{ path('app_task.show', {'id': task.id}) }}" class="text-brand-600 hover:text-brand-700" title="Voir">
+											<i class="fas fa-eye"></i>
+										</a>
+										<a href="{{ path('app_task.edit', {'id': task.id}) }}" class="text-ink-muted hover:text-ink" title="Modifier">
+											<i class="fas fa-edit"></i>
+										</a>
+										{% include "task/_delete_form.html.twig" %}
+									</div>
 
-                                </div>
-                            {% endif %}
-                        {% endfor %}
+								</div>
+							{% endif %}
+						{% endfor %}
 
-                        {% if tasks|filter(task => task.status.value == status.value)|length == 0 %}
-                            <p class="empty-label text-sm text-gray-400 text-center py-4">Aucune tâche</p>
-                        {% endif %}
-                    </div>
+						{% if tasks|filter(task => task.status.value == status.value)|length == 0 %}
+							<p class="empty-label text-sm text-ink-faint text-center py-4">Aucune tâche</p>
+						{% endif %}
+					</div>
 
-                </div>
-            {% endfor %}
+				</div>
+			{% endfor %}
 
-        </div>
-    </div>
+		</div>
+	</div>
 
-    {# Toast notification #}
-    <div data-kanban-target="toast"
-         class="fixed bottom-6 right-6 px-4 py-3 rounded-lg text-sm font-medium text-white shadow-lg transition-all duration-300 opacity-0 translate-y-4 pointer-events-none z-50">
-    </div>
+	{# Toast notification #}
+	<div data-kanban-target="toast"
+	     class="pointer-events-none fixed bottom-6 right-6 z-50 translate-y-4 rounded-lg px-4 py-3 text-sm font-medium text-white opacity-0 shadow-lg transition-all duration-300">
+	</div>
 
 </div>
 {% endblock %}

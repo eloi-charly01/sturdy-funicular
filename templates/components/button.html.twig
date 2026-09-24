@@ -1,0 +1,26 @@
+{# components/button.html.twig
+   Requires: label (string) OR pass content between tags.
+   Optional: variant ('primary'|'secondary'|'danger'), icon (fontawesome class),
+             href (render a link), type ('submit'|'button'|...), extra_classes,
+             title (icon-only links), classes pass-through. #}
+
+{% set variant_map = {
+    'primary': 'bg-brand-600 text-white hover:bg-brand-700',
+    'secondary': 'bg-surface text-ink border border-border hover:bg-surface-muted',
+    'danger': 'bg-danger text-white hover:bg-danger/90',
+} %}
+
+{% set base = 'inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:cursor-not-allowed disabled:opacity-50' %}
+{% set classes = base ~ ' ' ~ variant_map[variant|default('primary')] ~ (extra_classes is defined and extra_classes ? ' ' ~ extra_classes : '') %}
+
+{% if href is defined and href %}
+	<a href="{{ href }}" class="{{ classes }}" {% if title is defined and title %}title="{{ title }}"{% endif %}>
+		{% if icon is defined and icon %}<i class="{{ icon }}"></i>{% endif %}
+		{% if label is defined and label %}<span>{{ label }}</span>{% endif %}
+	</a>
+{% else %}
+	<button type="{{ type|default('submit') }}" class="{{ classes }}" {% if title is defined and title %}title="{{ title }}"{% endif %} {% if disabled is defined and disabled %}disabled{% endif %}>
+		{% if icon is defined and icon %}<i class="{{ icon }}"></i>{% endif %}
+		{% if label is defined and label %}<span>{{ label }}</span>{% endif %}
+	</button>
+{% endif %}

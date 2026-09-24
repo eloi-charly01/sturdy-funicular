@@ -1,0 +1,18 @@
+{# components/badge.html.twig
+   Requires: label OR content between tags.
+   Optional: variant ('neutral'|'brand'|'success'|'warning'|'danger'), classes
+             pass-through (e.g. token classes from a PHP enum). #}
+
+{% set variant_map = {
+    'neutral': 'bg-surface-active text-ink-muted',
+    'brand': 'bg-brand-100 text-brand-800',
+    'success': 'bg-status-done text-status-done-on',
+    'warning': 'bg-status-in-progress text-status-in-progress-on',
+    'danger': 'bg-status-cancelled text-status-cancelled-on',
+} %}
+
+<span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium {{ variant_map[variant|default('neutral')] }} {{ classes is defined and classes ? classes : '' }}">
+	{% if icon is defined and icon %}<i class="{{ icon }}"></i>{% endif %}
+	{{ label is defined and label ? label : '' }}
+	{{ content }}
+</span>

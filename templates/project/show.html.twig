@@ -6,110 +6,81 @@
 
 {% block body %}
 	<div class="overflow-hidden">
-		<div class="mb-6 flex justify-between items-center">
-			<h4 class="text-2xl font-semibold text-gray-700">Détails du projet</h4>
+		<div class="mb-6 flex items-center justify-between">
+			<div>
+				<h4 class="text-2xl font-semibold text-ink">Détails du projet</h4>
+				<p class="mt-1 text-sm text-ink-muted">{{ project.name }}</p>
+			</div>
 			<div class="flex space-x-2">
-				<a href="{{ path('app_project.edit', {'id': project.id}) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-sm font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-					<i class="fas fa-edit mr-2"></i>
-					Modifier
-				</a>
-				<a href="{{ path('app_project.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-sm font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-					<i class="fas fa-arrow-left mr-2"></i>
-					Retour
-				</a>
+				{{ include('components/button.html.twig', {
+					href: path('app_project.edit', {'id': project.id}),
+					variant: 'secondary',
+					icon: 'fas fa-edit',
+					label: 'Modifier',
+				}) }}
+				{{ include('components/button.html.twig', {
+					href: path('app_project.index'),
+					variant: 'secondary',
+					icon: 'fas fa-arrow-left',
+					label: 'Retour',
+				}) }}
 			</div>
 		</div>
 
-		<div
-			class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-			<!-- En-tête du projet -->
-			<div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+		<div class="overflow-hidden rounded-lg border border-border bg-surface shadow-sm">
+			<div class="border-b border-border bg-surface-muted px-6 py-4">
 				<div class="flex items-center justify-between">
 					<div>
-						<h2 class="text-xl font-bold text-gray-800 flex items-center">
-							<span class="mr-3 px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-mono">
+						<h2 class="flex items-center text-xl font-bold text-ink">
+							<span class="mr-3 rounded-full px-3 py-1 font-mono text-sm {{ project.status.colorClass }}">
 								{{ project.acronyme }}
 							</span>
 							{{ project.name }}
 						</h2>
-						<p class="text-sm text-gray-500 mt-1">Créé le
+						<p class="mt-1 text-sm text-ink-muted">Créé le
 							{{ project.createdAt|date('d/m/Y') }}</p>
 					</div>
-					<span class="px-3 py-1 rounded-full text-xs font-semibold {{ project.status.colorClass }}">
+					<span class="rounded-full px-3 py-1 text-xs font-semibold {{ project.status.colorClass }}">
 						{{ project.status.label }}
 					</span>
 				</div>
 			</div>
 
-			<!-- Contenu principal -->
 			<div class="px-6 py-4">
 				<div class="mb-6">
-					<h3 class="text-lg font-medium text-gray-900 mb-2">Description</h3>
-					<div class="prose max-w-none text-gray-600">
-						{{ project.description|nl2br }}
-					</div>
+					<h3 class="mb-2 text-lg font-medium text-ink">Description</h3>
+					<div class="max-w-none text-ink-muted">{{ project.description|nl2br }}</div>
 				</div>
 
-				<!-- Métadonnées -->
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-					<div class="border border-gray-100 rounded-lg p-4">
-						<h4 class="text-sm font-medium text-gray-500 mb-3">INFORMATIONS</h4>
+				<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+					<div class="rounded-lg border border-border p-4">
+						<h4 class="mb-3 text-sm font-medium text-ink-muted">INFORMATIONS</h4>
 						<dl class="space-y-3">
 							<div class="flex items-start">
-								<dt class="text-sm font-medium text-gray-500 w-32">Créé par</dt>
-								<dd class="text-sm text-gray-900">{{ project.creator.username ?? 'Non spécifié' }}</dd>
+								<dt class="w-32 text-sm font-medium text-ink-muted">Créé par</dt>
+								<dd class="text-sm text-ink">{{ project.creator.username ?? 'Non spécifié' }}</dd>
 							</div>
 							<div class="flex items-start">
-								<dt class="text-sm font-medium text-gray-500 w-32">Date création</dt>
-								<dd class="text-sm text-gray-900">{{ project.createdAt|date('d/m/Y H:i') }}</dd>
+								<dt class="w-32 text-sm font-medium text-ink-muted">Date création</dt>
+								<dd class="text-sm text-ink">{{ project.createdAt|date('d/m/Y H:i') }}</dd>
 							</div>
 							<div class="flex items-start">
-								<dt class="text-sm font-medium text-gray-500 w-32">Dernière modification</dt>
-								<dd class="text-sm text-gray-900">{{ project.updatedAt|date('d/m/Y H:i') }}</dd>
+								<dt class="w-32 text-sm font-medium text-ink-muted">Dernière modification</dt>
+								<dd class="text-sm text-ink">{{ project.updatedAt|date('d/m/Y H:i') }}</dd>
 							</div>
 						</dl>
 					</div>
 
-					<div class="border border-gray-100 rounded-lg p-4">
-						<h4 class="text-sm font-medium text-gray-500 mb-3">ÉQUIPE</h4>
-						{# {% if project.collaborateurs|length > 0 %}
-																			<div class="flex flex-wrap gap-2">
-																				{% for collaborator in project.collaborateurs %}
-																					<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-																						{{ collaborator.username }}
-																					</span>
-																				{% endfor %}
-																			</div>
-																		{% else %} #}
-						<p class="text-sm text-gray-500">Aucun collaborateur assigné</p>
-						{# {% endif %} #}
+					<div class="rounded-lg border border-border p-4">
+						<h4 class="mb-3 text-sm font-medium text-ink-muted">ÉQUIPE</h4>
+						<p class="text-sm text-ink">Aucun collaborateur assigné</p>
 					</div>
 				</div>
 			</div>
 
-			<!-- Section des tâches (optionnelle) -->
-			<div class="px-6 py-4 border-t border-gray-200">
-				<h3 class="text-lg font-medium text-gray-900 mb-4">Tâches associées</h3>
-				{# {% if project.taches|length > 0 %}
-													<div class="space-y-3">
-														{% for task in project.taches %}
-															<div class="flex items-center justify-between p-3 bg-gray-50 rounded-md">
-																<div>
-																	<h4 class="font-medium text-gray-800">{{ task.titre }}</h4>
-																	<p class="text-sm text-gray-500">{{ task.description|slice(0, 50) }}...</p>
-																</div>
-																<span class="text-xs px-2 py-1 rounded-full
-																		                                    {% if task.statut == 'a_faire' %}bg-gray-100 text-gray-800
-																		                                    {% elseif task.statut == 'en_cours' %}bg-yellow-100 text-yellow-800
-																		                                    {% else %}bg-green-100 text-green-800{% endif %}">
-																	{{ task.statut|replace({'_': ' '})|title }}
-																</span>
-															</div>
-														{% endfor %}
-													</div>
-												{% else %} #}
-				<p class="text-sm text-gray-500">Aucune tâche associée à ce projet</p>
-				{# {% endif %} #}
+			<div class="border-t border-border px-6 py-4">
+				<h3 class="mb-4 text-lg font-medium text-ink">Tâches associées</h3>
+				<p class="text-sm text-ink-muted">Aucune tâche associée à ce projet</p>
 			</div>
 		</div>
 	</div>

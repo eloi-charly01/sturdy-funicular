@@ -6,48 +6,54 @@
 {% endblock %}
 
 {% block body %}
-	<div class="overflow-x-auto">
-		<div class="flex justify-between">
-			<h4 class="text-2xl font-semibold text-gray-500">Projets</h4>
+	<div>
+		<div class="mb-6">
+			<h4 class="text-2xl font-semibold text-ink">Tableau de bord</h4>
+			<p class="mt-1 text-sm text-ink-muted">Vue d'ensemble de votre activité</p>
 		</div>
 
-		<div class="grid grid-cols-1 md:grid-cols-3 mt-6 gap-4">
-			{{ include('partials/_widget.html.twig', { title : "Projets", description: "Nombre total de projets"  , total : count_projects}) }}
-			{{ include('partials/_widget.html.twig', { title : "Membres", description: "Nombre total des membres" , total : count_users }) }}
-			{{ include('partials/_widget.html.twig', { title : "Taches", description: "Nombre total des taches" , total : count_task }) }}
+		<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+			{{ include('components/widget.html.twig', { title: 'Projets', description: 'Nombre total de projets', total: count_projects, icon: 'fas fa-folder-open', variant: 'primary' }) }}
+			{{ include('components/widget.html.twig', { title: 'Membres', description: 'Nombre total des membres', total: count_users, icon: 'fas fa-users', variant: 'success' }) }}
+			{{ include('components/widget.html.twig', { title: 'Taches', description: 'Nombre total des taches', total: count_task, icon: 'fas fa-check-square', variant: 'danger' }) }}
 		</div>
 
-		<div class="mt-10 bg-white rounded-md shadow-sm p-4">
-			<h4 class="text-xl font-semibold text-gray-700 mb-4">Tâches par projet</h4>
-
-			<div class="overflow-x-auto bg-white shadow-sm rounded-md border border-gray-200">
-				<table class="min-w-full divide-y divide-gray-200 text-sm text-left">
-					<thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+		{% set card_body %}
+			<div class="overflow-x-auto">
+				<table class="min-w-full divide-y divide-border text-sm text-left">
+					<thead class="bg-surface-muted text-ink-muted uppercase text-xs">
 						<tr>
-							<th class="px-4 py-2">Projet</th>
-							<th class="px-4 py-2 ">Nombre de tâches</th>
+							<th class="px-6 py-3 font-medium">Projet</th>
+							<th class="px-6 py-3 font-medium">Nombre de tâches</th>
 						</tr>
 					</thead>
-					<tbody class="divide-y divide-gray-100">
+					<tbody class="divide-y divide-border">
 						{% for item in tasks_per_project %}
-							<tr class="hover:bg-gray-50 transition">
-								<td class="px-6 py-4 font-medium text-gray-800">
-									{{ item.name }}
-								</td>
-								<td class="px-6 py-4 ">
-									{{ item.count }}
-								</td>
+							<tr class="transition hover:bg-surface-active">
+								<td class="px-6 py-4 font-medium text-ink">{{ item.name }}</td>
+								<td class="px-6 py-4 text-ink-muted">{{ item.count }}</td>
 							</tr>
 						{% else %}
 							<tr>
-								<td colspan="2" class="px-6 py-4 text-center text-sm text-gray-500 italic">
-									Aucun projet trouvé.
+								<td colspan="2">
+									{% include 'components/empty_state.html.twig' with {
+										icon: 'fas fa-folder-open',
+										title: 'Aucun projet',
+										message: 'Commencez par créer votre premier projet.',
+									} %}
 								</td>
 							</tr>
 						{% endfor %}
 					</tbody>
 				</table>
 			</div>
+		{% endset %}
+
+		<div class="mt-8">
+			{{ include('components/card.html.twig', {
+				title: 'Tâches par projet',
+				body: card_body,
+			}) }}
 		</div>
 	</div>
 {% endblock %}

@@ -1,0 +1,20 @@
+{# components/input.html.twig
+   Requires: name.
+   Optional: label, type, value, placeholder, icon (fontawesome class), error,
+             required, autofocus, extra_classes. #}
+
+{% set input_classes = 'block w-full rounded-md border bg-surface px-3.5 py-2 text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-focus-ring ' %}
+{% set input_classes = input_classes ~ (error is defined and error ? 'border-danger' : 'border-border') ~ (icon is defined and icon ? ' pl-10' : '') ~ (extra_classes is defined and extra_classes ? ' ' ~ extra_classes : '') %}
+
+{% if label is defined and label %}
+	<label for="{{ name }}" class="mb-1.5 block text-sm font-medium text-ink">{{ label }}</label>
+{% endif %}
+<div class="relative">
+	{% if icon is defined and icon %}
+		<span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-ink-faint"><i class="{{ icon }}"></i></span>
+	{% endif %}
+	<input type="{{ type|default('text') }}" id="{{ name }}" name="{{ name }}" value="{{ value|default('') }}" placeholder="{{ placeholder|default('') }}" class="{{ input_classes }}" {% if required is defined and required %}required{% endif %} {% if autofocus is defined and autofocus %}autofocus{% endif %} {% if autocomplete is defined and autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}>
+</div>
+{% if error is defined and error %}
+	<p class="mt-1.5 text-xs text-danger">{{ error }}</p>
+{% endif %}

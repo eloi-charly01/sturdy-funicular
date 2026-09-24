@@ -1,0 +1,24 @@
+{% set widget_variant = variant|default('primary') %}
+{% set widget_styles = {
+    'primary': 'bg-brand-50 text-brand-700',
+    'success': 'bg-success/10 text-success',
+    'danger': 'bg-danger/10 text-danger',
+    'neutral': 'bg-surface-active text-ink-muted',
+} %}
+
+<div class="rounded-lg border border-border bg-surface p-5 shadow-sm">
+	<div class="flex items-start justify-between">
+		<div class="flex items-center gap-4">
+			{% if icon is defined %}
+				<span class="flex h-12 w-12 items-center justify-center rounded-md {{ widget_styles[widget_variant] }}">
+					<i class="{{ icon }} text-lg"></i>
+				</span>
+			{% endif %}
+			<div>
+				<h5 class="text-sm font-semibold text-ink">{{ title }}</h5>
+				<p class="mt-0.5 text-xs text-ink-muted">{{ description }}</p>
+				<p class="mt-2 text-2xl font-bold text-ink">{{ total }}</p>
+			</div>
+		</div>
+	</div>
+</div>

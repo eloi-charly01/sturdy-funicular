@@ -6,112 +6,116 @@
 {% endblock %}
 
 {% block body %}
-	<div
-		class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-		{# 🔷 Header Jira-style #}
-		<div class="mb-4 flex justify-between items-start flex-wrap gap-2">
+	<div class="mx-auto max-w-6xl">
+		<div class="mb-4 flex flex-wrap items-start justify-between gap-2">
 			<div>
-				<h1 class="text-2xl font-bold text-gray-800 flex items-center gap-4">
+				<h1 class="flex items-center gap-4 text-2xl font-bold text-ink">
 					{{ task.title }}
-					<span class="text-sm font-medium bg-gray-100 text-gray-600 px-2 py-1 rounded">
-						#{{ task.id }}
-					</span>
+					<span class="rounded bg-surface-active px-2 py-1 text-sm font-medium text-ink-muted">#{{ task.id }}</span>
 				</h1>
-				<div class="flex flex-wrap gap-4 mt-2 text-sm text-gray-600">
-					<span class="font-medium">Projet :</span>
+				<div class="mt-2 flex flex-wrap gap-4 text-sm text-ink-muted">
+					<span class="font-medium text-ink">Projet :</span>
 					{{ task.project.name ?? '-' }}
-					<span class="font-medium">Statut :</span>
-					<span class="px-2 py-1 rounded-full text-xs font-semibold {{ task.status.colorClass }}">
+					<span class="font-medium text-ink">Statut :</span>
+					<span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ task.status.colorClass }}">
 						{{ task.status.label }}
 					</span>
-					<span class="font-medium">Assigné à :</span>
+					<span class="font-medium text-ink">Assigné à :</span>
 					{{ task.assigned.firstname ?? '-' }}
 				</div>
 			</div>
 
-			<div class="flex gap-2 mt-1">
-				<a href="{{ path('app_task.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded text-sm font-medium">
-					← Retour à la liste
-				</a>
-
-				<a href="{{ path('app_task.edit', {'id': task.id}) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-sm font-medium">
-					✏️ Modifier
-				</a>
+			<div class="mt-1 flex gap-2">
+				{{ include('components/button.html.twig', {
+					href: path('app_task.index'),
+					variant: 'secondary',
+					icon: 'fas fa-arrow-left',
+					label: 'Retour à la liste',
+				}) }}
+				{{ include('components/button.html.twig', {
+					href: path('app_task.edit', {'id': task.id}),
+					icon: 'fas fa-edit',
+					label: 'Modifier',
+				}) }}
 			</div>
 		</div>
 
-		{# 🧾 Bloc d'information #}
-		<div class="bg-white px-6 py-5 rounded-md shadow-sm border border-gray-200 mb-4 space-y-6">
-			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-sm text-gray-700">
+		{% set info_body %}
+			<div class="grid grid-cols-1 gap-6 text-sm text-ink lg:grid-cols-2">
 				<div class="space-y-2">
 					<div>
-						<p class="text-gray-500 font-medium">Créé le</p>
+						<p class="font-medium text-ink-muted">Créé le</p>
 						<p>{{ task.createdAt ? task.createdAt|date('d/m/Y H:i') : '-' }}</p>
 					</div>
 					<div>
-						<p class="text-gray-500 font-medium">Commencé le</p>
+						<p class="font-medium text-ink-muted">Commencé le</p>
 						<p>{{ task.startedAt ? task.startedAt|date('d/m/Y H:i') : '-' }}</p>
 					</div>
 					<div>
-						<p class="text-gray-500 font-medium">Terminé le</p>
+						<p class="font-medium text-ink-muted">Terminé le</p>
 						<p>{{ task.finishedAt ? task.finishedAt|date('d/m/Y H:i') : '-' }}</p>
 					</div>
 				</div>
 				<div class="space-y-2">
-					<div>
-						<p class="text-gray-500 font-medium">Description</p>
-						<p class="text-gray-700 whitespace-pre-line">{{ task.description }}</p>
-					</div>
+					<p class="font-medium text-ink-muted">Description</p>
+					<p class="whitespace-pre-line text-ink">{{ task.description }}</p>
 				</div>
 			</div>
+		{% endset %}
+
+		<div class="mb-4">
+			{{ include('components/card.html.twig', { title: 'Informations', body: info_body }) }}
 		</div>
 
-		{# 💬 Commentaires + formulaire #}
-		<div class="bg-white px-6 py-6 rounded-md shadow-sm border border-gray-200 mb-8 space-y-6">
-			<h2 class="text-lg font-bold text-gray-800 border-b pb-2">Commentaires</h2>
-
+		{% set comments_body %}
 			<form method="post" action="{{ path('app_comment.create', {'task': task.id}) }}" class="space-y-4">
 				<input type="hidden" name="_token" value="{{ csrf_token('comment' ~ task.id) }}">
 				<div>
-					<label for="comment_content" class="block text-sm font-medium text-gray-700 mb-1">Ajouter un commentaire</label>
-					<textarea id="comment_content" name="content" rows="4" class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-md" placeholder="Saisissez votre commentaire ici..."></textarea>
+					<label for="comment_content" class="mb-1 block text-sm font-medium text-ink">Ajouter un commentaire</label>
+					<textarea id="comment_content" name="content" rows="4" class="block w-full rounded-md border border-border bg-surface px-4 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-brand-600 focus:ring-focus-ring" placeholder="Saisissez votre commentaire ici..."></textarea>
 				</div>
 
 				<div class="flex justify-end">
-					<button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-sm font-medium">
-						💬 Ajouter
-					</button>
+					{{ include('components/button.html.twig', {
+						type: 'submit',
+						icon: 'fas fa-plus',
+						label: 'Ajouter',
+					}) }}
 				</div>
 			</form>
 
 			{% if task.comments|length > 0 %}
-				<div class="space-y-4">
+				<div class="mt-6 space-y-4">
 					{% for comment in task.comments %}
-						<div class="border-l-4 border-indigo-600 px-4 py-2 bg-gray-50 rounded">
-							<div class="flex justify-between items-start">
+						<div class="rounded-l border-l-4 border-brand-600 bg-surface-muted px-4 py-2">
+							<div class="flex items-start justify-between">
 								<div>
-									<p class="font-semibold text-gray-700">{{ comment.author.lastname }}</p>
-									<p class="text-xs text-gray-500">{{ comment.author.email }}</p>
+									<p class="font-semibold text-ink">{{ comment.author.lastname }}</p>
+									<p class="text-xs text-ink-muted">{{ comment.author.email }}</p>
 								</div>
-								<span class="text-xs text-gray-500">{{ comment.createdAt|date('d/m/Y H:i') }}</span>
+								<span class="text-xs text-ink-muted">{{ comment.createdAt|date('d/m/Y H:i') }}</span>
 							</div>
-							<p class="text-gray-700 text-sm mt-2 whitespace-pre-line">{{ comment.content }}</p>
+							<p class="mt-2 whitespace-pre-line text-sm text-ink">{{ comment.content }}</p>
 							{% if comment.author == app.user or is_granted('ROLE_ADMIN') %}
 								<form method="post" action="{{ path('app_comment.delete', {'id': comment.id}) }}" class="mt-2 flex justify-end" onsubmit="return confirm('Supprimer ce commentaire ?');">
 									<input type="hidden" name="_token" value="{{ csrf_token('delete-comment' ~ comment.id) }}">
-									<button type="submit" class="text-xs text-red-600 hover:text-red-800">Supprimer</button>
+									<button type="submit" class="text-xs text-danger hover:text-danger/70">Supprimer</button>
 								</form>
 							{% endif %}
 						</div>
 					{% endfor %}
 				</div>
 			{% else %}
-				<div class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-md text-sm">
-					Aucun commentaire pour le moment.
+				<div class="mt-4">
+					{% include 'components/empty_state.html.twig' with {
+						icon: 'fas fa-comments',
+						title: 'Aucun commentaire',
+						message: 'Soyez le premier à commenter ce ticket.',
+					} %}
 				</div>
 			{% endif %}
+		{% endset %}
 
-
-		</div>
+		{{ include('components/card.html.twig', { title: 'Commentaires', body: comments_body }) }}
 	</div>
 {% endblock %}

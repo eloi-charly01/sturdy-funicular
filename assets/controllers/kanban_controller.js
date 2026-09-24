@@ -11,8 +11,8 @@ export default class extends Controller {
                 group: 'tasks',
                 animation: 150,
                 ghostClass: 'opacity-40',
-                chosenClass: 'ring-2 ring-indigo-400',
-                dragClass: 'shadow-xl rotate-1',
+                chosenClass: 'drag-chosen',
+                dragClass: 'drag-card',
                 handle: '.task-card',
                 onEnd: (event) => this.onEnd(event),
             })
@@ -56,7 +56,7 @@ export default class extends Controller {
 
             if (count === 0 && !empty) {
                 empty = document.createElement('p');
-                empty.className = 'empty-label text-sm text-gray-400 text-center py-4';
+                empty.className = 'empty-label text-sm text-ink-faint text-center py-4';
                 empty.textContent = 'Aucune tâche';
                 column.appendChild(empty);
             } else if (count > 0 && empty) {
@@ -94,7 +94,7 @@ export default class extends Controller {
         const toast = this.toastTarget;
         toast.textContent = message;
         toast.className = `fixed bottom-6 right-6 px-4 py-3 rounded-lg text-sm font-medium text-white shadow-lg transition-all duration-300 z-50 ${
-            type === 'success' ? 'bg-green-600' : 'bg-red-500'
+            type === 'success' ? 'bg-success' : 'bg-danger'
         }`;
         toast.style.opacity = '1';
         toast.style.transform = 'translateY(0)';

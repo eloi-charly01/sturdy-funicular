@@ -22,10 +22,10 @@ enum ProjectStatusEnum: string
     public function colorClass(): string
     {
         return match ($this) {
-            self::PENDING => 'bg-gray-100 text-gray-800',
-            self::IN_PROGRESS => 'bg-yellow-100 text-yellow-800',
-            self::DONE => 'bg-green-100 text-green-800',
-            self::CANCELLED => 'bg-red-100 text-red-800',
+            self::PENDING => 'bg-status-pending text-status-pending-on',
+            self::IN_PROGRESS => 'bg-status-in-progress text-status-in-progress-on',
+            self::DONE => 'bg-status-done text-status-done-on',
+            self::CANCELLED => 'bg-status-cancelled text-status-cancelled-on',
         };
     }
 }

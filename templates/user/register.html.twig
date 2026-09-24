@@ -2,20 +2,28 @@
 
 {% block title %}
 	{{ parent() }}
-	Nouveau membres
+	Nouveau membre
 {% endblock %}
 
 {% block body %}
 	<div class="overflow-hidden">
-		<div class="mb-6 flex justify-between items-center">
-			<h4 class="text-2xl font-semibold text-gray-700">Créer un nouveau membres</h4>
-			<a href="{{ path('app_user.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-sm font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-				<i class="fas fa-arrow-left mr-2"></i>
-				Retour à la liste
-			</a>
+		<div class="mb-6 flex items-center justify-between">
+			<div>
+				<h4 class="text-2xl font-semibold text-ink">Créer un nouveau membre</h4>
+				<p class="mt-1 text-sm text-ink-muted">Ajoutez un membre à votre équipe</p>
+			</div>
+			{{ include('components/button.html.twig', {
+				href: path('app_user.index'),
+				variant: 'secondary',
+				icon: 'fas fa-arrow-left',
+				label: 'Retour à la liste',
+			}) }}
 		</div>
-		<div class="bg-white px-6 py-4 rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-			{{ include('user/_form_registration.html.twig') }}
+		<div class="overflow-hidden rounded-lg border border-border bg-surface shadow-sm">
+			{% set form_body %}
+				{{ include('user/_form_registration.html.twig') }}
+			{% endset %}
+			{{ include('components/card.html.twig', { body: form_body }) }}
 		</div>
 	</div>
 {% endblock %}

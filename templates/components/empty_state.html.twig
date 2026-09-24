@@ -1,0 +1,10 @@
+{# components/empty_state.html.twig
+   Requires: title.
+   Optional: message, icon (fontawesome class), action (pre-rendered CTA). #}
+
+<div class="flex flex-col items-center justify-center px-6 py-12 text-center">
+	{% if icon is defined and icon %}<i class="{{ icon }} mb-3 text-3xl text-ink-faint"></i>{% endif %}
+	<p class="text-base font-semibold text-ink">{{ title }}</p>
+	{% if message is defined and message %}<p class="mt-1 max-w-sm text-sm text-ink-muted">{{ message }}</p>{% endif %}
+	{% if action is defined and action %}<div class="mt-4">{{ action }}</div>{% endif %}
+</div>
